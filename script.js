@@ -1,11 +1,6 @@
-/* ==========================================
-   NERVO™ v2 — Script
-   ========================================== */
-
 (function () {
   'use strict';
 
-  // ---- SCROLL REVEAL ----
   const fadeEls = document.querySelectorAll('.fade-up');
 
   const observer = new IntersectionObserver(
@@ -22,7 +17,6 @@
 
   fadeEls.forEach((el) => observer.observe(el));
 
-  // ---- HEADER SCROLL ----
   const header = document.getElementById('site-header');
   window.addEventListener('scroll', () => {
     if (window.scrollY > 40) {
@@ -32,7 +26,6 @@
     }
   }, { passive: true });
 
-  // ---- ACTIVE NAV LINK ----
   const sections = document.querySelectorAll('section[id]');
   const navLinks = document.querySelectorAll('.header-nav a');
 
@@ -54,7 +47,6 @@
 
   sections.forEach((s) => sectionObserver.observe(s));
 
-  // ---- SMOOTH SCROLL ----
   document.querySelectorAll('a[href^="#"]').forEach((a) => {
     a.addEventListener('click', function (e) {
       const target = document.querySelector(this.getAttribute('href'));
@@ -66,7 +58,6 @@
     });
   });
 
-  // ---- DEV NOTICE ----
   if (document.querySelector('a[href*="YOUR_PRODUCT_ID"]')) {
     console.info(
       '%cNERVO™ Dev',
