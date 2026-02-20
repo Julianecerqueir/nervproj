@@ -1,0 +1,38 @@
+.btn-complete {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 28px;
+  background: var(--blue);
+  color: var(--bg-dark);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transition: background 0.25s, transform 0.2s, box-shadow 0.25s;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-complete::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.12);
+  transform: translateX(-105%);
+  transition: transform 0.35s;
+}
+
+.btn-complete:hover::after { transform: translateX(0); }
+.btn-complete:hover { transform: translateY(-1px); box-shadow: 0 6px 20px var(--blue-glow); }
+
+.btn-complete.btn-final { background: var(--green); }
+.btn-complete.btn-final:hover { box-shadow: 0 6px 20px rgba(76,175,130,0.3); }
+
+.btn-complete.done {
+  background: var(--green-dim);
+  color: var(--green);
+  border: 1px solid var(--green);
+  pointer-events: none;
+}

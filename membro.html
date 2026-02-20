@@ -1,0 +1,1093 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NERVO™ — Executive Protocol Access</title>
+  <link rel="stylesheet" href="membro.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500&family=Barlow+Condensed:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@300;400;500&family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+
+  <!-- ── AIS STYLES ── -->
+  <style>
+    /* Scoped to #section-ais to avoid conflicts with membro.css */
+    #section-ais {
+      --ais-bg: #0a0a08;
+      --ais-surface: #111110;
+      --ais-border: #222220;
+      --ais-border2: #2e2e2a;
+      --ais-accent: #3a8ff5;
+      --ais-accent-dim: #3a8ff5;
+      --ais-text: #e8e6df;
+      --ais-muted: #c0bcbc;
+      --ais-danger: #04856f;
+      --ais-warm: #f5c23a;
+      --ais-teal: #15c79d;
+      --ais-purple: #c83af5;
+      background: var(--ais-bg);
+      color: var(--ais-text);
+      font-family: 'DM Mono', monospace;
+      min-height: 100vh;
+      padding: 0 !important;
+    }
+
+    #section-ais .ais-hero {
+      padding: 64px 48px 52px;
+      border-bottom: 1px solid var(--ais-border);
+      position: relative;
+      overflow: hidden;
+    }
+    #section-ais .ais-hero::after {
+      content: 'AIS';
+      position: absolute; right: -20px; top: -20px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 240px; color: var(--ais-border);
+      letter-spacing: -10px; line-height: 1;
+      pointer-events: none; user-select: none;
+    }
+    #section-ais .ais-badge {
+      display: inline-block;
+      border: 1px solid var(--ais-accent);
+      color: var(--ais-accent);
+      font-size: 10px; letter-spacing: 0.3em;
+      padding: 4px 12px; text-transform: uppercase;
+      margin-bottom: 24px; position: relative; z-index: 1;
+    }
+    #section-ais .ais-h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(48px, 7vw, 88px);
+      line-height: 0.9; letter-spacing: 2px;
+      position: relative; z-index: 1;
+      margin-bottom: 6px; color: var(--ais-text);
+    }
+    #section-ais .ais-h1 span { color: var(--ais-accent); }
+    #section-ais .ais-trademark {
+      font-size: 13px; color: var(--ais-muted);
+      letter-spacing: 0.1em; position: relative; z-index: 1;
+      margin-bottom: 28px;
+    }
+    #section-ais .ais-def {
+      max-width: 600px;
+      font-family: 'Instrument Serif', serif; font-style: italic;
+      font-size: 18px; line-height: 1.65; color: #c8c4bb;
+      position: relative; z-index: 1;
+      border-left: 2px solid var(--ais-accent); padding-left: 20px;
+    }
+
+    /* NAV TABS */
+    #section-ais .ais-nav {
+      display: flex; border-bottom: 1px solid var(--ais-border);
+      position: sticky; top: 0; z-index: 50;
+      background: var(--ais-bg);
+    }
+    #section-ais .ais-tab {
+      padding: 16px 28px; font-size: 11px;
+      letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--ais-muted); cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s; user-select: none; white-space: nowrap;
+      background: none; border-top: none; border-left: none; border-right: none;
+    }
+    #section-ais .ais-tab:hover { color: var(--ais-text); }
+    #section-ais .ais-tab.active { color: var(--ais-accent); border-bottom-color: var(--ais-accent); }
+    #section-ais .ais-panel { display: none; }
+    #section-ais .ais-panel.active { display: block; }
+
+    /* SECTION BLOCKS */
+    #section-ais .ais-section { padding: 56px 48px; border-bottom: 1px solid var(--ais-border); }
+    #section-ais .ais-section-label {
+      font-size: 10px; letter-spacing: 0.4em; color: var(--ais-muted);
+      text-transform: uppercase; margin-bottom: 28px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    #section-ais .ais-section-label::after { content: ''; flex: 1; height: 1px; background: var(--ais-border); }
+
+    /* TRIGGER CARDS */
+    #section-ais .ais-trigger-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px;
+    }
+    #section-ais .ais-tcard {
+      border: 1px solid var(--ais-border); padding: 24px;
+      background: var(--ais-surface); position: relative; overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    #section-ais .ais-tcard:hover { border-color: var(--ais-danger); }
+    #section-ais .ais-tcard::before {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 3px; height: 100%; background: var(--ais-danger);
+    }
+    #section-ais .ais-tnum { font-size: 10px; color: var(--ais-danger); letter-spacing: 0.2em; margin-bottom: 10px; }
+    #section-ais .ais-tname {
+      font-family: 'Bebas Neue', sans-serif; font-size: 24px;
+      letter-spacing: 1px; margin-bottom: 6px; color: var(--ais-text);
+    }
+    #section-ais .ais-tdesc { font-size: 12px; color: var(--ais-muted); line-height: 1.6; }
+
+    /* TIMING */
+    #section-ais .ais-timing {
+      background: linear-gradient(135deg, #1a1a14, #111110);
+      border: 1px solid var(--ais-accent);
+      padding: 28px 48px; margin: 0 48px;
+      position: relative; overflow: hidden;
+    }
+    #section-ais .ais-timing::after { content: '⚡'; position: absolute; right: 32px; font-size: 72px; opacity: 0.08; }
+    #section-ais .ais-timing-txt {
+      font-family: 'Instrument Serif', serif; font-size: 17px;
+      line-height: 1.7; color: var(--ais-text); max-width: 540px;
+    }
+    #section-ais .ais-timing-txt strong { color: var(--ais-accent); font-style: italic; font-family: 'Instrument Serif', serif; }
+
+    /* STEPS */
+    #section-ais .ais-proto { padding: 56px 48px; }
+    #section-ais .ais-proto-title {
+      font-family: 'Bebas Neue', sans-serif; font-size: 44px;
+      letter-spacing: 2px; margin-bottom: 40px; color: var(--ais-text);
+    }
+    #section-ais .ais-steps { display: flex; flex-direction: column; }
+    #section-ais .ais-step {
+      border: 1px solid var(--ais-border); border-bottom: none;
+      cursor: pointer; overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+    #section-ais .ais-step:last-child { border-bottom: 1px solid var(--ais-border); }
+    #section-ais .ais-step.active { border-color: var(--ais-accent); background: #0f110a; }
+    #section-ais .ais-step-hd {
+      display: flex; align-items: center; gap: 20px;
+      padding: 24px 28px; user-select: none;
+    }
+    #section-ais .ais-snum {
+      font-family: 'Bebas Neue', sans-serif; font-size: 48px;
+      line-height: 1; color: var(--ais-border); transition: color 0.3s; min-width: 56px;
+    }
+    #section-ais .ais-step.active .ais-snum { color: var(--ais-accent); }
+    #section-ais .ais-sname {
+      font-family: 'Bebas Neue', sans-serif; font-size: 32px;
+      letter-spacing: 2px; color: var(--ais-muted); transition: color 0.3s;
+    }
+    #section-ais .ais-step.active .ais-sname { color: var(--ais-text); }
+    #section-ais .ais-sarrow {
+      margin-left: auto; color: var(--ais-muted); font-size: 18px;
+      transition: transform 0.3s, color 0.3s;
+    }
+    #section-ais .ais-step.active .ais-sarrow { transform: rotate(90deg); color: var(--ais-accent); }
+    #section-ais .ais-sbody { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1); }
+    #section-ais .ais-step.active .ais-sbody { max-height: 600px; }
+    #section-ais .ais-sinner { padding: 0 28px 32px 104px; border-top: 1px solid var(--ais-border); }
+    #section-ais .ais-sinstr {
+      font-family: 'Instrument Serif', serif; font-size: 17px; font-style: italic;
+      color: #c0bdb4; line-height: 1.7; margin-bottom: 16px; padding-top: 20px;
+    }
+    #section-ais .ais-cues { display: flex; flex-direction: column; gap: 8px; }
+    #section-ais .ais-cue {
+      font-size: 12px; color: var(--ais-muted);
+      display: flex; align-items: baseline; gap: 10px; line-height: 1.5;
+    }
+    #section-ais .ais-cue::before { content: '—'; color: var(--ais-accent); flex-shrink: 0; }
+
+    /* TIMER */
+    #section-ais .ais-timer-wrap { margin-top: 20px; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+    #section-ais .ais-timer-disp {
+      font-family: 'Bebas Neue', sans-serif; font-size: 72px;
+      line-height: 1; color: var(--ais-accent); letter-spacing: 4px; transition: color 0.3s;
+    }
+    #section-ais .ais-timer-disp.running { color: var(--ais-warm); }
+    #section-ais .ais-timer-disp.done { color: var(--ais-accent); }
+
+    /* LABEL BANK */
+    #section-ais .ais-lbank { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    #section-ais .ais-chip {
+      border: 1px solid var(--ais-border); padding: 7px 14px;
+      font-size: 11px; letter-spacing: 0.15em; color: var(--ais-muted);
+      cursor: pointer; transition: all 0.2s; user-select: none; font-family: 'DM Mono', monospace;
+    }
+    #section-ais .ais-chip:hover, #section-ais .ais-chip.selected {
+      border-color: var(--ais-accent); color: var(--ais-accent); background: #0f110a;
+    }
+    #section-ais .ais-redir {
+      margin-top: 18px; background: #0f110a;
+      border: 1px solid var(--ais-accent); padding: 20px 24px;
+      font-family: 'Bebas Neue', sans-serif; font-size: 26px;
+      letter-spacing: 2px; color: var(--ais-accent); line-height: 1.3;
+    }
+
+    /* ACTIVATE */
+    #section-ais .ais-activate {
+      padding: 56px 48px; border-top: 1px solid var(--ais-border);
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; gap: 20px;
+    }
+    #section-ais .ais-act-label { font-size: 10px; letter-spacing: 0.4em; color: var(--ais-muted); text-transform: uppercase; }
+    #section-ais .ais-act-btn {
+      background: none; border: 2px solid var(--ais-accent);
+      color: var(--ais-accent); font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px; letter-spacing: 4px; padding: 20px 56px;
+      cursor: pointer; position: relative; overflow: hidden; transition: color 0.3s;
+    }
+    #section-ais .ais-act-btn::before {
+      content: ''; position: absolute; inset: 0;
+      background: var(--ais-accent); transform: translateX(-100%);
+      transition: transform 0.3s cubic-bezier(0.4,0,0.2,1); z-index: -1;
+    }
+    #section-ais .ais-act-btn:hover { color: var(--ais-bg); }
+    #section-ais .ais-act-btn:hover::before { transform: translateX(0); }
+
+    /* SHARED BUTTON */
+    #section-ais .ais-btn {
+      background: none; border: 1px solid var(--ais-accent); color: var(--ais-accent);
+      padding: 9px 18px; font-family: 'DM Mono', monospace;
+      font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+      cursor: pointer; transition: all 0.2s; align-self: flex-start;
+    }
+    #section-ais .ais-btn:hover { background: var(--ais-accent); color: var(--ais-bg); }
+    #section-ais .ais-btn:disabled { border-color: var(--ais-muted); color: var(--ais-muted); cursor: default; background: none; }
+
+    /* SEQUENCE MODAL */
+    #ais-seqModal {
+      position: fixed; inset: 0; background: rgba(10,10,8,0.97);
+      z-index: 9000; display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s;
+    }
+    #ais-seqModal.open { opacity: 1; pointer-events: all; }
+    #ais-seqModal .ais-modal-inner {
+      max-width: 540px; width: 90%; text-align: center;
+      padding: 44px; border: 1px solid var(--ais-accent);
+      background: #111110; position: relative;
+      font-family: 'DM Mono', monospace;
+    }
+    #ais-seqModal .ais-mclose {
+      position: absolute; top: 14px; right: 18px;
+      background: none; border: none; color: #6b6960;
+      font-size: 22px; cursor: pointer; transition: color 0.2s; line-height: 1;
+    }
+    #ais-seqModal .ais-mclose:hover { color: var(--ais-text); }
+    #ais-seqModal .ais-mprog { display: flex; gap: 8px; justify-content: center; margin-bottom: 28px; }
+    #ais-seqModal .ais-mdot { width: 6px; height: 6px; border: 1px solid #6b6960; border-radius: 50%; transition: all 0.3s; }
+    #ais-seqModal .ais-mdot.active { background: var(--ais-accent); border-color: var(--ais-accent); }
+    #ais-seqModal .ais-mdot.done { background: var(--ais-accent-dim); border-color: var(--ais-accent-dim); }
+    #ais-seqModal .ais-mlabel { font-size: 10px; letter-spacing: 0.4em; color: var(--ais-accent); text-transform: uppercase; margin-bottom: 12px; }
+    #ais-seqModal .ais-mname { font-family: 'Bebas Neue', sans-serif; font-size: 64px; color: #e8e6df; letter-spacing: 4px; margin-bottom: 14px; line-height: 1; }
+    #ais-seqModal .ais-minstr { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 17px; color: #c0bdb4; line-height: 1.7; margin-bottom: 28px; }
+    #ais-seqModal .ais-mtimer { font-family: 'Bebas Neue', sans-serif; font-size: 90px; color: var(--ais-accent); letter-spacing: 6px; line-height: 1; transition: color 0.3s; display: none; }
+    #ais-seqModal .ais-mtimer.countdown { color: var(--ais-warm); }
+    #ais-seqModal .ais-mlbank { display: none; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 20px; }
+    #ais-seqModal .ais-mquestion { display: none; margin-bottom: 20px; background: #0f110a; border: 1px solid var(--ais-accent); padding: 18px 22px; font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 2px; color: var(--ais-accent); line-height: 1.3; }
+    #ais-seqModal .ais-mnav { display: flex; gap: 10px; justify-content: center; margin-top: 28px; flex-wrap: wrap; }
+    #ais-seqModal .ais-mbtn {
+      background: none; border: 1px solid #6b6960; color: #6b6960;
+      padding: 9px 20px; font-family: 'DM Mono', monospace;
+      font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+      cursor: pointer; transition: all 0.2s;
+    }
+    #ais-seqModal .ais-mbtn.primary { border-color: var(--ais-accent); color: var(--ais-accent); }
+    #ais-seqModal .ais-mbtn:hover { background: #222220; color: #e8e6df; border-color: #e8e6df; }
+    #ais-seqModal .ais-mbtn.primary:hover { background: var(--ais-accent); color: #0a0a08; }
+
+    /* EXERCISES */
+    #section-ais .ais-ex-header { padding: 56px 48px 36px; border-bottom: 1px solid var(--ais-border); }
+    #section-ais .ais-ex-header h2 {
+      font-family: 'Bebas Neue', sans-serif; font-size: 48px;
+      letter-spacing: 2px; margin-bottom: 10px; color: var(--ais-text);
+    }
+    #section-ais .ais-ex-header h2 span { color: var(--ais-accent); }
+    #section-ais .ais-ex-header p { font-size: 12px; color: var(--ais-muted); line-height: 1.7; max-width: 540px; }
+    #section-ais .ais-ex-prog {
+      padding: 20px 48px; border-bottom: 1px solid var(--ais-border);
+      display: flex; align-items: center; gap: 16px;
+    }
+    #section-ais .ais-prog-lbl { font-size: 10px; letter-spacing: 0.3em; color: var(--ais-muted); text-transform: uppercase; white-space: nowrap; }
+    #section-ais .ais-prog-track { flex: 1; height: 3px; background: var(--ais-border); overflow: hidden; }
+    #section-ais .ais-prog-fill { height: 100%; background: var(--ais-accent); transition: width 0.6s cubic-bezier(0.4,0,0.2,1); width: 0%; }
+    #section-ais .ais-prog-count { font-size: 11px; color: var(--ais-accent); letter-spacing: 0.1em; white-space: nowrap; }
+    #section-ais .ais-ex-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      border-left: 1px solid var(--ais-border);
+    }
+    #section-ais .ais-ecard {
+      border-right: 1px solid var(--ais-border); border-bottom: 1px solid var(--ais-border);
+      padding: 32px 28px; position: relative;
+      display: flex; flex-direction: column; gap: 12px; transition: 0.2s;
+    }
+    #section-ais .ais-ecard:not(.locked):hover { background: var(--ais-surface); }
+    #section-ais .ais-ecard.locked { background: #0d0d0b; cursor: not-allowed; }
+    #section-ais .ais-ecard.completed { background: #0d110a; }
+    #section-ais .ais-etype {
+      font-size: 9px; letter-spacing: 0.35em; text-transform: uppercase;
+      padding: 3px 9px; border: 1px solid; display: inline-block; width: fit-content;
+    }
+    #section-ais .ais-etype.diag { color: var(--ais-warm); border-color: var(--ais-warm); }
+    #section-ais .ais-etype.daily { color: var(--ais-teal); border-color: var(--ais-teal); }
+    #section-ais .ais-etype.journal { color: var(--ais-purple); border-color: var(--ais-purple); }
+    #section-ais .ais-etype.sim { color: var(--ais-danger); border-color: var(--ais-danger); }
+    #section-ais .ais-enum {
+      position: absolute; top: 18px; right: 20px;
+      font-family: 'Bebas Neue', sans-serif; font-size: 44px;
+      color: var(--ais-border); line-height: 1;
+    }
+    #section-ais .ais-ecard.completed .ais-enum { color: var(--ais-accent-dim); }
+    #section-ais .ais-etitle { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 1px; line-height: 1.1; color: var(--ais-text); }
+    #section-ais .ais-ecard.locked .ais-etitle,
+    #section-ais .ais-ecard.locked .ais-edesc { opacity: 0.35; }
+    #section-ais .ais-edesc { font-size: 12px; color: var(--ais-muted); line-height: 1.6; }
+    #section-ais .ais-emeta { display: flex; gap: 14px; font-size: 10px; color: var(--ais-muted); letter-spacing: 0.15em; align-items: center; }
+    #section-ais .ais-stags { display: flex; gap: 5px; flex-wrap: wrap; }
+    #section-ais .ais-stag { font-size: 9px; letter-spacing: 0.2em; padding: 3px 7px; border: 1px solid var(--ais-border2); color: var(--ais-muted); text-transform: uppercase; }
+    #section-ais .ais-stag.r { border-color: #3a8ff5; color: #3a8ff5; }
+    #section-ais .ais-stag.l { border-color: var(--ais-warm); color: var(--ais-warm); }
+    #section-ais .ais-stag.i { border-color: var(--ais-danger); color: var(--ais-danger); }
+    #section-ais .ais-stag.re { border-color: var(--ais-accent); color: var(--ais-accent); }
+    #section-ais .ais-ebtn {
+      margin-top: auto; background: none; border: 1px solid var(--ais-accent);
+      color: var(--ais-accent); padding: 9px 18px; font-family: 'DM Mono', monospace;
+      font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+      cursor: pointer; transition: all 0.2s; align-self: flex-start;
+    }
+    #section-ais .ais-ebtn:hover { background: var(--ais-accent); color: var(--ais-bg); }
+    #section-ais .ais-ebtn.locked { border-color: var(--ais-border); color: var(--ais-muted); cursor: not-allowed; }
+    #section-ais .ais-ebtn.done { border-color: var(--ais-accent-dim); color: var(--ais-accent-dim); }
+
+    /* EXERCISE MODAL */
+    #ais-exModal {
+      position: fixed; inset: 0; background: rgba(10,10,8,0.97);
+      z-index: 9100; display: flex; align-items: flex-start; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s; overflow-y: auto; padding: 24px;
+    }
+    #ais-exModal.open { opacity: 1; pointer-events: all; }
+    #ais-exModal .ais-emin {
+      max-width: 660px; width: 100%;
+      border: 1px solid #2e2e2a; background: #111110; margin: auto;
+      font-family: 'DM Mono', monospace;
+    }
+    #ais-exModal .ais-emhead { padding: 36px 44px 28px; border-bottom: 1px solid #222220; position: relative; }
+    #ais-exModal .ais-emclose {
+      position: absolute; top: 18px; right: 20px; background: none; border: none;
+      color: #6b6960; font-size: 22px; cursor: pointer; transition: color 0.2s; line-height: 1;
+    }
+    #ais-exModal .ais-emclose:hover { color: #e8e6df; }
+    #ais-exModal .ais-emtitle { font-family: 'Bebas Neue', sans-serif; font-size: 42px; letter-spacing: 2px; line-height: 1; margin: 10px 0 7px; color: #e8e6df; }
+    #ais-exModal .ais-emmeta { font-size: 11px; color: #6b6960; letter-spacing: 0.15em; }
+    #ais-exModal .ais-embody { padding: 36px 44px; }
+    #ais-exModal .ais-emfooter { padding: 20px 44px 36px; border-top: 1px solid #222220; display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+
+    /* Exercise body elements */
+    #ais-exModal .ex-intro { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 16px; color: #c0bdb4; line-height: 1.8; margin-bottom: 28px; padding-bottom: 28px; border-bottom: 1px solid #222220; }
+    #ais-exModal .ex-block { margin-bottom: 28px; }
+    #ais-exModal .ex-blabel { font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase; color: #6b6960; display: block; margin-bottom: 10px; }
+    #ais-exModal .ex-q { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1px; color: #e8e6df; margin-bottom: 10px; line-height: 1.2; }
+    #ais-exModal .ex-textarea { width: 100%; background: #0a0a08; border: 1px solid #2e2e2a; color: #e8e6df; font-family: 'DM Mono', monospace; font-size: 12px; padding: 14px; line-height: 1.7; resize: vertical; min-height: 72px; outline: none; transition: border-color 0.2s; }
+    #ais-exModal .ex-textarea:focus { border-color: #3a8ff5; }
+    #ais-exModal .ex-textarea::placeholder { color: #6b6960; }
+    #ais-exModal .scenario-box { border-left: 3px solid #f5c23a; padding: 18px 22px; background: #14130e; font-size: 13px; line-height: 1.8; color: #e8e6df; margin-bottom: 18px; }
+    #ais-exModal .opt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+    #ais-exModal .opt { border: 1px solid #2e2e2a; padding: 12px 14px; font-size: 11px; color: #6b6960; cursor: pointer; transition: all 0.2s; line-height: 1.5; text-align: left; background: none; width: 100%; font-family: 'DM Mono', monospace; }
+    #ais-exModal .opt:hover { border-color: #3a8ff5; color: #e8e6df; background: #0f110a; }
+    #ais-exModal .opt.selected { border-color: #3a8ff5; color: #e8e6df; background: #0f110a; }
+    #ais-exModal .opt.correct { border-color: #3a8ff5; color: #3a8ff5; background: #0d110a; }
+    #ais-exModal .opt.wrong { border-color: #1a0494; color: #f5a0a0; background: #140a0a; }
+    #ais-exModal .checklist { display: flex; flex-direction: column; gap: 9px; }
+    #ais-exModal .check-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; border: 1px solid #222220; cursor: pointer; transition: all 0.2s; }
+    #ais-exModal .check-item:hover { border-color: #2e2e2a; }
+    #ais-exModal .check-item.checked { border-color: #3a8ff5; background: #0f110a; }
+    #ais-exModal .check-box { width: 16px; height: 16px; flex-shrink: 0; border: 1px solid #6b6960; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #0a0a08; transition: all 0.2s; margin-top: 2px; }
+    #ais-exModal .check-item.checked .check-box { border-color: #3a8ff5; background: #3a8ff5; }
+    #ais-exModal .check-txt { font-size: 12px; line-height: 1.6; color: #6b6960; }
+    #ais-exModal .check-item.checked .check-txt { color: #e8e6df; }
+    #ais-exModal .scale-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+    #ais-exModal .scale-lbl { font-size: 10px; color: #6b6960; letter-spacing: 0.1em; min-width: 40px; }
+    #ais-exModal .scale-dots { display: flex; gap: 5px; }
+    #ais-exModal .scale-dot { width: 32px; height: 32px; border: 1px solid #2e2e2a; display: flex; align-items: center; justify-content: center; font-size: 11px; cursor: pointer; transition: all 0.2s; color: #6b6960; }
+    #ais-exModal .scale-dot:hover, #ais-exModal .scale-dot.selected { border-color: #3a8ff5; color: #3a8ff5; background: #0f110a; }
+    #ais-exModal .scale-group-label { font-size: 11px; color: #6b6960; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 7px; }
+    #ais-exModal .highlight-box { background: linear-gradient(135deg, #0d110a, #111110); border: 1px solid #3a8ff5; padding: 20px 24px; margin: 20px 0 0; font-family: 'Instrument Serif', serif; font-style: italic; font-size: 15px; color: #e8e6df; line-height: 1.7; }
+    #ais-exModal .highlight-box strong { color: #3a8ff5; font-style: normal; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.2em; display: block; margin-bottom: 7px; }
+    #ais-exModal .feedback-box { padding: 14px 18px; margin-top: 14px; font-size: 11px; line-height: 1.7; display: none; }
+    #ais-exModal .feedback-box.pos { border-left: 3px solid #3a8ff5; color: #3a8ff5; background: #0d110a; }
+    #ais-exModal .feedback-box.neg { border-left: 3px solid #1a0494; color: #f5a0a0; background: #140a0a; }
+    #ais-exModal .timer-widget { margin-top: 16px; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+    #ais-exModal .timer-display { font-family: 'Bebas Neue', sans-serif; font-size: 64px; line-height: 1; color: #3a8ff5 letter-spacing 4px; transition: color 0.3s; }
+    #ais-exModal .timer-display.running { color: #f5c23a; }
+    #ais-exModal .timer-display.done { color: #3a8ff5; }
+
+    #ais-exModal .ais-finish-btn { background: #3a8ff5; border: none; color: #0a0a08; padding: 12px 28px; font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 2px; cursor: pointer; transition: background 0.2s; }
+    #ais-exModal .ais-finish-btn:hover { background: #3a8ff5; }
+    #ais-exModal .ais-cancel-btn { background: none; border: 1px solid #6b6960; color: #6b6960; padding: 12px 20px; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+    #ais-exModal .ais-cancel-btn:hover { border-color: #e8e6df; color: #e8e6df; }
+
+    @media (max-width: 640px) {
+      #section-ais .ais-hero,
+      #section-ais .ais-section,
+      #section-ais .ais-proto,
+      #section-ais .ais-activate,
+      #section-ais .ais-ex-header { padding: 36px 20px; }
+      #section-ais .ais-timing { margin: 0 20px; padding: 20px; }
+      #section-ais .ais-sinner { padding-left: 20px; }
+      #section-ais .ais-ex-grid { grid-template-columns: 1fr; border-left: none; }
+      #section-ais .ais-ex-prog { padding: 14px 20px; }
+      #ais-exModal .ais-embody, #ais-exModal .ais-emhead, #ais-exModal .ais-emfooter { padding: 20px; }
+      #ais-exModal .opt-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="#" class="sidebar-logo">
+        <img src="scr/NERVO_favicon_192 (1).png" alt="NERVO™" />
+      </a>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <span class="nav-group-label">Protocol</span>
+        <a href="#overview" class="nav-item active" data-section="overview">
+          <svg class="nav-icon" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="3" width="6" height="6" stroke="currentColor" stroke-width="1.3"/><rect x="3" y="11" width="6" height="6" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="11" width="6" height="6" stroke="currentColor" stroke-width="1.3"/></svg>
+          Overview
+        </a>
+        <a href="#day01" class="nav-item" data-section="day01">
+          <svg class="nav-icon" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.3"/><path d="M10 7v3l2 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Day 01
+          <span class="nav-tag">Disruption</span>
+        </a>
+        <a href="#day02" class="nav-item" data-section="day02">
+          <svg class="nav-icon" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.3"/><path d="M10 7v3l2 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Day 02
+          <span class="nav-tag">Stabilization</span>
+        </a>
+        <a href="#day03" class="nav-item" data-section="day03">
+          <svg class="nav-icon" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.3"/><path d="M10 7v3l2 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Day 03
+          <span class="nav-tag">Integration</span>
+        </a>
+      </div>
+
+      <div class="nav-group">
+        <span class="nav-group-label">Resources</span>
+
+        <!-- NEW AIS ITEM — before Protocol PDF -->
+        <a href="#ais" class="nav-item" data-section="ais">
+          <svg class="nav-icon" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.3"/></svg>
+          AIS Tool
+          <span class="nav-tag" style="background:rgba(200,245,58,0.12);color:#3a8ff5;border-color:#3a8ff5;">New</span>
+        </a>
+
+        <a href="#pdf" class="nav-item" data-section="pdf">
+          <svg class="nav-icon" viewBox="0 0 20 20" fill="none"><path d="M5 3h7l5 5v9H5V3z" stroke="currentColor" stroke-width="1.3"/><path d="M12 3v5h5" stroke="currentColor" stroke-width="1.3"/><path d="M8 12h4M8 9h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Protocol PDF
+        </a>
+        <a href="#guide" class="nav-item" data-section="guide">
+          <svg class="nav-icon" viewBox="0 0 20 20" fill="none"><path d="M4 6h12M4 10h12M4 14h8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Application Guide
+        </a>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="progress-wrap">
+        <span class="progress-label">Protocol Progress</span>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+        </div>
+        <span class="progress-pct" id="progressPct">0%</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MOBILE HEADER -->
+  <header class="mobile-header" id="mobileHeader">
+    <button class="burger" id="burgerBtn" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+    <img src="scr/NERVO_favicon_32.png" alt="NERVO™" class="mobile-logo" />
+    <div style="width:40px"></div>
+  </header>
+
+  <!-- OVERLAY -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- MAIN CONTENT -->
+  <main class="content" id="mainContent">
+
+    <!-- ── OVERVIEW ── -->
+    <section class="page-section active" id="section-overview">
+      <div class="section-inner">
+        <div class="page-eyebrow">Executive Cognitive Protocol</div>
+        <h1 class="page-title">Foundation Protocol<br /><span class="title-steel">Access Active.</span></h1>
+        <p class="page-sub">Your three-day cognitive architecture protocol is ready. Apply with precision. Not urgency.</p>
+
+        <div class="overview-grid">
+          <div class="day-overview-card" data-target="day01">
+            <div class="doc-top">
+              <span class="doc-day-tag">Day 01</span>
+              <div class="doc-rule"></div>
+              <span class="doc-status pending" id="status-day01">Pending</span>
+            </div>
+            <h3>Cognitive Autopilot<br />Disruption</h3>
+            <p>Expose and interrupt automatic internal patterns under pressure.</p>
+            <button class="btn-goto" onclick="navigateTo('day01')">
+              Begin Session
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+
+          <div class="day-overview-card" data-target="day02">
+            <div class="doc-top">
+              <span class="doc-day-tag">Day 02</span>
+              <div class="doc-rule"></div>
+              <span class="doc-status pending" id="status-day02">Pending</span>
+            </div>
+            <h3>Pressure Response<br />Stabilization</h3>
+            <p>Stabilize activation cycles and mitigate decision fatigue accumulation.</p>
+            <button class="btn-goto" onclick="navigateTo('day02')">
+              Begin Session
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+
+          <div class="day-overview-card" data-target="day03">
+            <div class="doc-top">
+              <span class="doc-day-tag">Day 03</span>
+              <div class="doc-rule"></div>
+              <span class="doc-status pending" id="status-day03">Pending</span>
+            </div>
+            <h3>Executive Continuity<br />Integration</h3>
+            <p>Integrate containment, energy architecture, and long-term performance stability.</p>
+            <button class="btn-goto" onclick="navigateTo('day03')">
+              Begin Session
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="overview-note">
+          <span class="note-dot"></span>
+          <p>Advance by integration, not by speed. Each session is complete before progressing.</p>
+        </div>
+
+        <div class="quick-resources">
+          <button class="resource-btn" onclick="navigateTo('ais')" style="border-color:rgba(200,245,58,0.4);color:#c8f53a;">
+            <svg viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.3"/></svg>
+            AIS Tool
+          </button>
+          <button class="resource-btn" onclick="navigateTo('pdf')">
+            <svg viewBox="0 0 20 20" fill="none"><path d="M5 3h7l5 5v9H5V3z" stroke="currentColor" stroke-width="1.3"/><path d="M12 3v5h5" stroke="currentColor" stroke-width="1.3"/></svg>
+            Protocol PDF
+          </button>
+          <button class="resource-btn" onclick="navigateTo('guide')">
+            <svg viewBox="0 0 20 20" fill="none"><path d="M4 6h12M4 10h12M4 14h8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            Application Guide
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── DAY 01 ── -->
+    <section class="page-section" id="section-day01">
+      <div class="section-inner">
+        <div class="page-eyebrow">Day 01 — Cognitive Autopilot Disruption</div>
+        <h1 class="page-title">Cognitive Autopilot<br /><span class="title-steel">Disruption.</span></h1>
+        <p class="page-sub">Expose and interrupt automatic internal patterns operating under pressure.</p>
+        <div class="instruction-block">
+          <span class="ib-label">Before you begin</span>
+          <p>Find a focused, private environment. Avoid multitasking. Allow approximately 30 minutes without interruption.</p>
+        </div>
+        <div class="audio-section">
+          <div class="audio-card">
+            <div class="audio-header"><div class="audio-meta"><span class="audio-session">Session 01A</span><span class="audio-duration">~30 min</span></div><span class="audio-title">CONTEXT STRATEGIC</span></div>
+            <div class="player-wrap">
+              <audio id="audio01a" src="scr/day 1-Cognitive Autopilot Disruption..mp3" preload="metadata"></audio>
+              <div class="player-ui" data-audio="audio01a">
+                <button class="play-btn" data-audio="audio01a" aria-label="Play"><svg class="icon-play" viewBox="0 0 24 24" fill="none"><polygon points="6,4 20,12 6,20" fill="currentColor"/></svg><svg class="icon-pause hidden" viewBox="0 0 24 24" fill="none"><rect x="5" y="4" width="4" height="16" fill="currentColor"/><rect x="15" y="4" width="4" height="16" fill="currentColor"/></svg></button>
+                <div class="player-center"><div class="progress-track" data-role="track"><div class="progress-played" data-role="played"></div><div class="progress-thumb" data-role="thumb"></div></div><div class="time-row"><span class="time-current" data-role="current">0:00</span><span class="time-total" data-role="total">--:--</span></div></div>
+                <div class="volume-wrap"><svg viewBox="0 0 20 20" fill="none" width="16"><path d="M5 7H3v6h2l4 4V3L5 7z" fill="currentColor"/><path d="M13 7c1.1 1 1.1 5 0 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><input type="range" class="volume-slider" data-role="volume" min="0" max="1" step="0.05" value="1" /></div>
+              </div>
+            </div>
+          </div>
+          <div class="audio-card" style="margin-top:12px;">
+            <div class="audio-header"><div class="audio-meta"><span class="audio-session">Session 01B</span><span class="audio-duration">~20 min</span></div><span class="audio-title">APPLICATION — OBSERVATION LAYER</span></div>
+            <div class="player-wrap">
+              <audio id="audio01b" src="scr/day 1- TECHNICAL FRAME e APPLICATION — OBSERVATION LAYER.mp3" preload="metadata"></audio>
+              <div class="player-ui" data-audio="audio01b">
+                <button class="play-btn" data-audio="audio01b" aria-label="Play"><svg class="icon-play" viewBox="0 0 24 24" fill="none"><polygon points="6,4 20,12 6,20" fill="currentColor"/></svg><svg class="icon-pause hidden" viewBox="0 0 24 24" fill="none"><rect x="5" y="4" width="4" height="16" fill="currentColor"/><rect x="15" y="4" width="4" height="16" fill="currentColor"/></svg></button>
+                <div class="player-center"><div class="progress-track" data-role="track"><div class="progress-played" data-role="played"></div><div class="progress-thumb" data-role="thumb"></div></div><div class="time-row"><span class="time-current" data-role="current">0:00</span><span class="time-total" data-role="total">--:--</span></div></div>
+                <div class="volume-wrap"><svg viewBox="0 0 20 20" fill="none" width="16"><path d="M5 7H3v6h2l4 4V3L5 7z" fill="currentColor"/><path d="M13 7c1.1 1 1.1 5 0 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><input type="range" class="volume-slider" data-role="volume" min="0" max="1" step="0.05" value="1" /></div>
+              </div>
+            </div>
+          </div>
+          <div class="audio-card" style="margin-top:12px;">
+            <div class="audio-header"><div class="audio-meta"><span class="audio-session">Session 01C</span><span class="audio-duration">~18 min</span></div><span class="audio-title">Pattern Mapping</span></div>
+            <div class="player-wrap">
+              <audio id="audio01c" src="scr/day 1- INTERRUPTION — THE FIRST LAYER e EXECUTIVE APPLICATION — WHEN TO USE.mp3" preload="metadata"></audio>
+              <div class="player-ui" data-audio="audio01c">
+                <button class="play-btn" data-audio="audio01c" aria-label="Play"><svg class="icon-play" viewBox="0 0 24 24" fill="none"><polygon points="6,4 20,12 6,20" fill="currentColor"/></svg><svg class="icon-pause hidden" viewBox="0 0 24 24" fill="none"><rect x="5" y="4" width="4" height="16" fill="currentColor"/><rect x="15" y="4" width="4" height="16" fill="currentColor"/></svg></button>
+                <div class="player-center"><div class="progress-track" data-role="track"><div class="progress-played" data-role="played"></div><div class="progress-thumb" data-role="thumb"></div></div><div class="time-row"><span class="time-current" data-role="current">0:00</span><span class="time-total" data-role="total">--:--</span></div></div>
+                <div class="volume-wrap"><svg viewBox="0 0 20 20" fill="none" width="16"><path d="M5 7H3v6h2l4 4V3L5 7z" fill="currentColor"/><path d="M13 7c1.1 1 1.1 5 0 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><input type="range" class="volume-slider" data-role="volume" min="0" max="1" step="0.05" value="1" /></div>
+              </div>
+            </div>
+          </div>
+          <div class="audio-card" style="margin-top:12px;">
+            <div class="audio-header"><div class="audio-meta"><span class="audio-session">Session 01D</span><span class="audio-duration">~15 min</span></div><span class="audio-title">Integration Layer</span></div>
+            <div class="player-wrap">
+              <audio id="audio01d" src="scr/day 1- CLOSING — INTEGRATION INSTRUCTIONS.mp3" preload="metadata"></audio>
+              <div class="player-ui" data-audio="audio01d">
+                <button class="play-btn" data-audio="audio01d" aria-label="Play"><svg class="icon-play" viewBox="0 0 24 24" fill="none"><polygon points="6,4 20,12 6,20" fill="currentColor"/></svg><svg class="icon-pause hidden" viewBox="0 0 24 24" fill="none"><rect x="5" y="4" width="4" height="16" fill="currentColor"/><rect x="15" y="4" width="4" height="16" fill="currentColor"/></svg></button>
+                <div class="player-center"><div class="progress-track" data-role="track"><div class="progress-played" data-role="played"></div><div class="progress-thumb" data-role="thumb"></div></div><div class="time-row"><span class="time-current" data-role="current">0:00</span><span class="time-total" data-role="total">--:--</span></div></div>
+                <div class="volume-wrap"><svg viewBox="0 0 20 20" fill="none" width="16"><path d="M5 7H3v6h2l4 4V3L5 7z" fill="currentColor"/><path d="M13 7c1.1 1 1.1 5 0 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><input type="range" class="volume-slider" data-role="volume" min="0" max="1" step="0.05" value="1" /></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="session-notes">
+          <div class="sn-header"><span class="sn-label">Session Notes</span><button class="sn-clear" data-day="01">Clear</button></div>
+          <textarea class="notes-area" id="notes01" placeholder="Private notes — stored only in this browser." rows="5"></textarea>
+        </div>
+        <div class="session-nav">
+          <div></div>
+          <button class="btn-complete" data-day="01" onclick="markComplete('01', 'day02')">Mark Complete &amp; Continue <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── DAY 02 ── -->
+    <section class="page-section" id="section-day02">
+      <div class="section-inner">
+        <div class="page-eyebrow">Day 02 — Pressure Response Stabilization</div>
+        <h1 class="page-title">Pressure Response<br /><span class="title-steel">Stabilization.</span></h1>
+        <p class="page-sub">Stabilize activation cycles and mitigate decision fatigue accumulation.</p>
+        <div class="instruction-block"><span class="ib-label">Before you begin</span><p>Ensure Day 01 has been fully integrated. Allow 24–48 hours between sessions for optimal processing.</p></div>
+        <div class="audio-section">
+          <div class="audio-card"><div class="audio-header"><div class="audio-meta"><span class="audio-session">Session 02A</span><span class="audio-duration">~30 min</span></div><span class="audio-title">Cognitive Autopilot Disruption</span></div><div class="player-wrap"><audio id="audio02a" src="scr/day 2- STRATEGIC CONTEXT.mp3" preload="metadata"></audio><div class="player-ui" data-audio="audio02a"><button class="play-btn" data-audio="audio02a" aria-label="Play"><svg class="icon-play" viewBox="0 0 24 24" fill="none"><polygon points="6,4 20,12 6,20" fill="currentColor"/></svg><svg class="icon-pause hidden" viewBox="0 0 24 24" fill="none"><rect x="5" y="4" width="4" height="16" fill="currentColor"/><rect x="15" y="4" width="4" height="16" fill="currentColor"/></svg></button><div class="player-center"><div class="progress-track" data-role="track"><div class="progress-played" data-role="played"></div><div class="progress-thumb" data-role="thumb"></div></div><div class="time-row"><span class="time-current" data-role="current">0:00</span><span class="time-total" data-role="total">--:--</span></div></div><div class="volume-wrap"><svg viewBox="0 0 20 20" fill="none" width="16"><path d="M5 7H3v6h2l4 4V3L5 7z" fill="currentColor"/><path d="M13 7c1.1 1 1.1 5 0 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><input type="range" class="volume-slider" data-role="volume" min="0" max="1" step="0.05" value="1" /></div></div></div></div>
+          <div class="audio-card" style="margin-top:12px;"><div class="audio-header"><div class="audio-meta"><span class="audio-session">Session 02B</span><span class="audio-duration">~20 min</span></div><span class="audio-title">Calibration Layer</span></div><div class="player-wrap"><audio id="audio02b" src="scr/day 2- TECHNICAL FRAME — ACTIVATION CYCLE.mp3" preload="metadata"></audio><div class="player-ui" data-audio="audio02b"><button class="play-btn" data-audio="audio02b" aria-label="Play"><svg class="icon-play" viewBox="0 0 24 24" fill="none"><polygon points="6,4 20,12 6,20" fill="currentColor"/></svg><svg class="icon-pause hidden" viewBox="0 0 24 24" fill="none"><rect x="5" y="4" width="4" height="16" fill="currentColor"/><rect x="15" y="4" width="4" height="16" fill="currentColor"/></svg></button><div class="player-center"><div class="progress-track" data-role="track"><div class="progress-played" data-role="played"></div><div class="progress-thumb" data-role="thumb"></div></div><div class="time-row"><span class="time-current" data-role="current">0:00</span><span class="time-total" data-role="total">--:--</span></div></div><div class="volume-wrap"><svg viewBox="0 0 20 20" fill="none" width="16"><path d="M5 7H3v6h2l4 4V3L5 7z" fill="currentColor"/><path d="M13 7c1.1 1 1.1 5 0 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><input type="range" class="volume-slider" data-role="volume" min="0" max="1" step="0.05" value="1" /></div></div></div></div>
+          <div class="audio-card" style="margin-top:12px;"><div class="audio-header"><div class="audio-meta"><span class="audio-session">Session 02C</span><span class="audio-duration">~18 min</span></div><span class="audio-title">Pattern Mapping</span></div><div class="player-wrap"><audio id="audio02c" src="scr/day 2- STABILIZATION PROTOCOL.mp3" preload="metadata"></audio><div class="player-ui" data-audio="audio02c"><button class="play-btn" data-audio="audio02c" aria-label="Play"><svg class="icon-play" viewBox="0 0 24 24" fill="none"><polygon points="6,4 20,12 6,20" fill="currentColor"/></svg><svg class="icon-pause hidden" viewBox="0 0 24 24" fill="none"><rect x="5" y="4" width="4" height="16" fill="currentColor"/><rect x="15" y="4" width="4" height="16" fill="currentColor"/></svg></button><div class="player-center"><div class="progress-track" data-role="track"><div class="progress-played" data-role="played"></div><div class="progress-thumb" data-role="thumb"></div></div><div class="time-row"><span class="time-current" data-role="current">0:00</span><span class="time-total" data-role="total">--:--</span></div></div><div class="volume-wrap"><svg viewBox="0 0 20 20" fill="none" width="16"><path d="M5 7H3v6h2l4 4V3L5 7z" fill="currentColor"/><path d="M13 7c1.1 1 1.1 5 0 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><input type="range" class="volume-slider" data-role="volume" min="0" max="1" step="0.05" value="1" /></div></div></div></div>
+          <div class="audio-card" style="margin-top:12px;"><div class="audio-header"><div class="audio-meta"><span class="audio-session">Session 02D</span><span class="audio-duration">~15 min</span></div><span class="audio-title">Integration Layer</span></div><div class="player-wrap"><audio id="audio02d" src="scr/day 2-EXECUTIVE CALIBRATION.mp3" preload="metadata"></audio><div class="player-ui" data-audio="audio02d"><button class="play-btn" data-audio="audio02d" aria-label="Play"><svg class="icon-play" viewBox="0 0 24 24" fill="none"><polygon points="6,4 20,12 6,20" fill="currentColor"/></svg><svg class="icon-pause hidden" viewBox="0 0 24 24" fill="none"><rect x="5" y="4" width="4" height="16" fill="currentColor"/><rect x="15" y="4" width="4" height="16" fill="currentColor"/></svg></button><div class="player-center"><div class="progress-track" data-role="track"><div class="progress-played" data-role="played"></div><div class="progress-thumb" data-role="thumb"></div></div><div class="time-row"><span class="time-current" data-role="current">0:00</span><span class="time-total" data-role="total">--:--</span></div></div><div class="volume-wrap"><svg viewBox="0 0 20 20" fill="none" width="16"><path d="M5 7H3v6h2l4 4V3L5 7z" fill="currentColor"/><path d="M13 7c1.1 1 1.1 5 0 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><input type="range" class="volume-slider" data-role="volume" min="0" max="1" step="0.05" value="1" /></div></div></div></div>
+        </div>
+        <div class="session-notes"><div class="sn-header"><span class="sn-label">Session Notes</span><button class="sn-clear" data-day="02">Clear</button></div><textarea class="notes-area" id="notes02" placeholder="Private notes — stored only in this browser." rows="5"></textarea></div>
+        <div class="session-nav">
+          <button class="btn-back" onclick="navigateTo('day01')"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M7 4l-4 4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Day 01</button>
+          <button class="btn-complete" data-day="02" onclick="markComplete('02', 'day03')">Mark Complete &amp; Continue <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── DAY 03 ── -->
+    <section class="page-section" id="section-day03">
+      <div class="section-inner">
+        <div class="page-eyebrow">Day 03 — Executive Continuity Integration</div>
+        <h1 class="page-title">Executive Continuity<br /><span class="title-steel">Integration.</span></h1>
+        <p class="page-sub">Integrate containment, energy architecture, and long-term performance stability.</p>
+        <div class="instruction-block"><span class="ib-label">Final session</span><p>This session completes the Foundation Protocol. Integration is continuous — the protocol may be repeated as a preventive maintenance cycle.</p></div>
+        <div class="audio-section">
+          <div class="audio-card"><div class="audio-header"><div class="audio-meta"><span class="audio-session">Session 03A</span><span class="audio-duration">~30 min</span></div><span class="audio-title">Executive Continuity Integration</span></div><div class="player-wrap"><audio id="audio03a" src="scr/dia 3- Executive Continuity Integration.mp3" preload="metadata"></audio><div class="player-ui" data-audio="audio03a"><button class="play-btn" data-audio="audio03a" aria-label="Play"><svg class="icon-play" viewBox="0 0 24 24" fill="none"><polygon points="6,4 20,12 6,20" fill="currentColor"/></svg><svg class="icon-pause hidden" viewBox="0 0 24 24" fill="none"><rect x="5" y="4" width="4" height="16" fill="currentColor"/><rect x="15" y="4" width="4" height="16" fill="currentColor"/></svg></button><div class="player-center"><div class="progress-track" data-role="track"><div class="progress-played" data-role="played"></div><div class="progress-thumb" data-role="thumb"></div></div><div class="time-row"><span class="time-current" data-role="current">0:00</span><span class="time-total" data-role="total">--:--</span></div></div><div class="volume-wrap"><svg viewBox="0 0 20 20" fill="none" width="16"><path d="M5 7H3v6h2l4 4V3L5 7z" fill="currentColor"/><path d="M13 7c1.1 1 1.1 5 0 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><input type="range" class="volume-slider" data-role="volume" min="0" max="1" step="0.05" value="1" /></div></div></div></div>
+          <div class="audio-card" style="margin-top:12px;"><div class="audio-header"><div class="audio-meta"><span class="audio-session">Session 03B</span><span class="audio-duration">~20 min</span></div><span class="audio-title">Energy Architecture</span></div><div class="player-wrap"><audio id="audio03b" src="scr/day 3- ENERGY ARCHITECTURE.mp3" preload="metadata"></audio><div class="player-ui" data-audio="audio03b"><button class="play-btn" data-audio="audio03b" aria-label="Play"><svg class="icon-play" viewBox="0 0 24 24" fill="none"><polygon points="6,4 20,12 6,20" fill="currentColor"/></svg><svg class="icon-pause hidden" viewBox="0 0 24 24" fill="none"><rect x="5" y="4" width="4" height="16" fill="currentColor"/><rect x="15" y="4" width="4" height="16" fill="currentColor"/></svg></button><div class="player-center"><div class="progress-track" data-role="track"><div class="progress-played" data-role="played"></div><div class="progress-thumb" data-role="thumb"></div></div><div class="time-row"><span class="time-current" data-role="current">0:00</span><span class="time-total" data-role="total">--:--</span></div></div><div class="volume-wrap"><svg viewBox="0 0 20 20" fill="none" width="16"><path d="M5 7H3v6h2l4 4V3L5 7z" fill="currentColor"/><path d="M13 7c1.1 1 1.1 5 0 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><input type="range" class="volume-slider" data-role="volume" min="0" max="1" step="0.05" value="1" /></div></div></div></div>
+          <div class="audio-card" style="margin-top:12px;"><div class="audio-header"><div class="audio-meta"><span class="audio-session">Session 03C</span><span class="audio-duration">~18 min</span></div><span class="audio-title">Long-Term Stability</span></div><div class="player-wrap"><audio id="audio03c" src="scr/day 3- LONG-TERM STABILITY.mp3" preload="metadata"></audio><div class="player-ui" data-audio="audio03c"><button class="play-btn" data-audio="audio03c" aria-label="Play"><svg class="icon-play" viewBox="0 0 24 24" fill="none"><polygon points="6,4 20,12 6,20" fill="currentColor"/></svg><svg class="icon-pause hidden" viewBox="0 0 24 24" fill="none"><rect x="5" y="4" width="4" height="16" fill="currentColor"/><rect x="15" y="4" width="4" height="16" fill="currentColor"/></svg></button><div class="player-center"><div class="progress-track" data-role="track"><div class="progress-played" data-role="played"></div><div class="progress-thumb" data-role="thumb"></div></div><div class="time-row"><span class="time-current" data-role="current">0:00</span><span class="time-total" data-role="total">--:--</span></div></div><div class="volume-wrap"><svg viewBox="0 0 20 20" fill="none" width="16"><path d="M5 7H3v6h2l4 4V3L5 7z" fill="currentColor"/><path d="M13 7c1.1 1 1.1 5 0 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><input type="range" class="volume-slider" data-role="volume" min="0" max="1" step="0.05" value="1" /></div></div></div></div>
+          <div class="audio-card" style="margin-top:12px;"><div class="audio-header"><div class="audio-meta"><span class="audio-session">Session 03D</span><span class="audio-duration">~15 min</span></div><span class="audio-title">Closing</span></div><div class="player-wrap"><audio id="audio03d" src="scr/day 3- CLOSING.mp3" preload="metadata"></audio><div class="player-ui" data-audio="audio03d"><button class="play-btn" data-audio="audio03d" aria-label="Play"><svg class="icon-play" viewBox="0 0 24 24" fill="none"><polygon points="6,4 20,12 6,20" fill="currentColor"/></svg><svg class="icon-pause hidden" viewBox="0 0 24 24" fill="none"><rect x="5" y="4" width="4" height="16" fill="currentColor"/><rect x="15" y="4" width="4" height="16" fill="currentColor"/></svg></button><div class="player-center"><div class="progress-track" data-role="track"><div class="progress-played" data-role="played"></div><div class="progress-thumb" data-role="thumb"></div></div><div class="time-row"><span class="time-current" data-role="current">0:00</span><span class="time-total" data-role="total">--:--</span></div></div><div class="volume-wrap"><svg viewBox="0 0 20 20" fill="none" width="16"><path d="M5 7H3v6h2l4 4V3L5 7z" fill="currentColor"/><path d="M13 7c1.1 1 1.1 5 0 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><input type="range" class="volume-slider" data-role="volume" min="0" max="1" step="0.05" value="1" /></div></div></div></div>
+        </div>
+        <div class="session-notes"><div class="sn-header"><span class="sn-label">Session Notes</span><button class="sn-clear" data-day="03">Clear</button></div><textarea class="notes-area" id="notes03" placeholder="Private notes — stored only in this browser." rows="5"></textarea></div>
+        <div class="completion-block" id="completionBlock" style="display:none"><div class="cb-inner"><div class="cb-dot"></div><h3>Protocol Complete.</h3><p>The NERVO™ Foundation Protocol has been fully applied. For continued cognitive maintenance, restart the cycle after 30 days.</p></div></div>
+        <div class="session-nav">
+          <button class="btn-back" onclick="navigateTo('day02')"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M7 4l-4 4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Day 02</button>
+          <button class="btn-complete btn-final" data-day="03" onclick="markComplete('03', null)">Complete Protocol <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8l3.5 3.5L13 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         AIS — Autopilot Interruption Sequence
+    ══════════════════════════════════════ -->
+    <section class="page-section" id="section-ais">
+
+      <!-- HERO -->
+      <div class="ais-hero">
+        <div class="ais-badge">Executive Tool · Cognitive Management</div>
+        <h1 class="ais-h1">Autopilot<br><span>Interruption</span><br>Sequence</h1>
+        <div class="ais-trademark">™ — Structured Micro-Intervention Protocol</div>
+        <p class="ais-def">A structured micro-intervention designed to prevent cognitive degradation during pressure escalation. Applied immediately upon detection of micro-reactivity, mental noise escalation, or automatic rehearsal loops.</p>
+      </div>
+
+      <!-- TABS -->
+      <nav class="ais-nav">
+        <button class="ais-tab active" onclick="aisSwitchTab('protocol',this)">Protocol</button>
+        <button class="ais-tab" onclick="aisSwitchTab('exercises',this)">Exercises &amp; Practice</button>
+      </nav>
+
+      <!-- PROTOCOL PANEL -->
+      <div class="ais-panel active" id="ais-tab-protocol">
+
+        <div class="ais-section">
+          <div class="ais-section-label">Detection Signals — When to Apply</div>
+          <div class="ais-trigger-grid">
+            <div class="ais-tcard"><div class="ais-tnum">SIGNAL 01</div><div class="ais-tname">Micro-Reactivity</div><div class="ais-tdesc">Shortened patience. Impulse to respond before processing is complete. Heightened sensitivity to external inputs.</div></div>
+            <div class="ais-tcard"><div class="ais-tnum">SIGNAL 02</div><div class="ais-tname">Mental Noise Escalation</div><div class="ais-tdesc">Accelerated, fragmented thought. Difficulty isolating relevant signal. Internal volume increasing without resolution.</div></div>
+            <div class="ais-tcard"><div class="ais-tnum">SIGNAL 03</div><div class="ais-tname">Automatic Rehearsal</div><div class="ais-tdesc">Preemptive internal dialogue. Simulating conversations or outcomes before they occur. Cognitive energy spent on fiction.</div></div>
+          </div>
+        </div>
+
+        <div class="ais-timing" style="margin-bottom:0">
+          <div class="ais-timing-txt">This tool is applied <strong>not after loss of control</strong> — but at the <strong>first signal of drift.</strong> The earlier the intervention, the lower the recovery cost. Precision requires anticipation, not reaction.</div>
+        </div>
+
+        <div class="ais-proto">
+          <div class="ais-proto-title">Operational Protocol</div>
+          <div class="ais-section-label" style="margin-bottom:0;padding-bottom:28px;">Four-step sequence: Recognize · Label · Interrupt · Redirect</div>
+          <div class="ais-steps">
+
+            <div class="ais-step active" onclick="aisToggleStep(this)">
+              <div class="ais-step-hd"><div class="ais-snum">01</div><div class="ais-sname">Recognize</div><div class="ais-sarrow">▶</div></div>
+              <div class="ais-sbody"><div class="ais-sinner">
+                <div class="ais-sinstr">Detect the internal shift. No judgment. Only detection.</div>
+                <div class="ais-cues">
+                  <div class="ais-cue">Shortened patience — you want to act before you should.</div>
+                  <div class="ais-cue">Accelerated thought — processing is outrunning clarity.</div>
+                  <div class="ais-cue">Preemptive internal dialogue — rehearsing outcomes that haven't occurred.</div>
+                </div>
+              </div></div>
+            </div>
+
+            <div class="ais-step" onclick="aisToggleStep(this)">
+              <div class="ais-step-hd"><div class="ais-snum">02</div><div class="ais-sname">Label</div><div class="ais-sarrow">▶</div></div>
+              <div class="ais-sbody"><div class="ais-sinner">
+                <div class="ais-sinstr">Name the pattern in two words. Labeling reduces automatic fusion with the state.</div>
+                <div class="ais-lbank">
+                  <div class="ais-chip" onclick="aisSelLabel(this,event)">Rehearsal Loop</div>
+                  <div class="ais-chip" onclick="aisSelLabel(this,event)">Control Spike</div>
+                  <div class="ais-chip" onclick="aisSelLabel(this,event)">Noise Escalation</div>
+                  <div class="ais-chip" onclick="aisSelLabel(this,event)">Patience Drop</div>
+                  <div class="ais-chip" onclick="aisSelLabel(this,event)">Drift Detected</div>
+                  <div class="ais-chip" onclick="aisSelLabel(this,event)">Signal Lost</div>
+                </div>
+              </div></div>
+            </div>
+
+            <div class="ais-step" onclick="aisToggleStep(this)">
+              <div class="ais-step-hd"><div class="ais-snum">03</div><div class="ais-sname">Interrupt</div><div class="ais-sarrow">▶</div></div>
+              <div class="ais-sbody"><div class="ais-sinner">
+                <div class="ais-sinstr">Pause internal processing for three seconds. No commentary. No correction. No justification.</div>
+                <div class="ais-timer-wrap">
+                  <div class="ais-timer-disp" id="ais-stepTimer">3</div>
+                  <button class="ais-btn" id="ais-stepTimerBtn" onclick="aisStartTimer('ais-stepTimer','ais-stepTimerBtn',3,event)">Start 3-Second Pause</button>
+                </div>
+              </div></div>
+            </div>
+
+            <div class="ais-step" onclick="aisToggleStep(this)">
+              <div class="ais-step-hd"><div class="ais-snum">04</div><div class="ais-sname">Redirect</div><div class="ais-sarrow">▶</div></div>
+              <div class="ais-sbody"><div class="ais-sinner">
+                <div class="ais-sinstr">Ask one controlled question. Then execute the next deliberate action.</div>
+                <div class="ais-redir">"What preserves<br>precision right now?"</div>
+                <div class="ais-cues" style="margin-top:14px;">
+                  <div class="ais-cue">Not speed. Not dominance. Precision.</div>
+                  <div class="ais-cue">One question. One next action. Nothing else.</div>
+                </div>
+              </div></div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="ais-activate">
+          <div class="ais-act-label">Run the full sequence in guided mode</div>
+          <button class="ais-act-btn" onclick="aisOpenSeq()">ACTIVATE SEQUENCE</button>
+        </div>
+
+      </div><!-- end protocol panel -->
+
+      <!-- EXERCISES PANEL -->
+      <div class="ais-panel" id="ais-tab-exercises">
+        <div class="ais-ex-header">
+          <div class="ais-badge">Progressão Desbloqueável · 8 Exercises</div>
+          <h2>Exercises &<br><span>Practice</span></h2>
+          <p>Complete each exercise to unlock the next. Progress through self-diagnosis, daily routines, structured journaling, and real-world scenario simulation. Each exercise targets specific steps of the AIS protocol.</p>
+        </div>
+        <div class="ais-ex-prog">
+          <span class="ais-prog-lbl">Progress</span>
+          <div class="ais-prog-track"><div class="ais-prog-fill" id="ais-progFill"></div></div>
+          <span class="ais-prog-count" id="ais-progCount">0 / 8 completed</span>
+        </div>
+        <div class="ais-ex-grid" id="ais-exGrid"></div>
+      </div>
+
+    </section><!-- end #section-ais -->
+
+    <!-- ── PDF ── -->
+    <section class="page-section" id="section-pdf">
+      <div class="section-inner">
+        <div class="page-eyebrow">Resources — Protocol PDF</div>
+        <h1 class="page-title">Protocol<br /><span class="title-steel">Documentation.</span></h1>
+        <p class="page-sub">The complete written framework of the NERVO™ Foundation Protocol.</p>
+        <div class="pdf-block">
+          <div class="pdf-viewer-wrap">
+            <iframe src="Protocol Orientation/NERVO_Executive_Cognitive_Foundation_Protocol_Manual.pdf" title="NERVO™ Protocol — Executive Documentation" class="pdf-iframe" type="application/pdf">
+              <div class="pdf-fallback"><p>Your browser does not support inline PDF viewing.</p><a href="Protocol Orientation/NERVO_Executive_Cognitive_Foundation_Protocol_Manual.pdf" class="btn-download" download>Download PDF instead</a></div>
+            </iframe>
+          </div>
+          <div class="pdf-actions">
+            <a href="Protocol Orientation/NERVO_Executive_Cognitive_Foundation_Protocol_Manual.pdf" class="btn-download" download="NERVO-Protocol.pdf"><svg viewBox="0 0 20 20" fill="none" width="16"><path d="M10 3v10M6 9l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 15h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> Download PDF</a>
+            <a href="Protocol Orientation/NERVO_Executive_Cognitive_Foundation_Protocol_Manual.pdf" class="btn-open-new" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 20 20" fill="none" width="14"><path d="M9 5H5v10h10v-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M11 3h6v6M17 3l-7 7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Open in New Tab</a>
+            <p class="pdf-note">For private executive use only. Non-transferable.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── GUIDE ── -->
+    <section class="page-section" id="section-guide">
+      <div class="section-inner">
+        <div class="page-eyebrow">Resources — Application Guide</div>
+        <h1 class="page-title">Application<br /><span class="title-steel">Guide.</span></h1>
+        <p class="page-sub">Practical framework for integrating NERVO™ into high-pressure executive environments.</p>
+        <div class="guide-blocks">
+          <div class="guide-card"><span class="guide-num">01</span><div class="guide-content"><h3>Environment Setup</h3><p>Apply the protocol in a private, controlled environment.<br> NERVO™ requires uninterrupted cognitive focus.</p><ul class="guide-list"><li>Silent or controlled-noise setting</li><li>All notifications disabled</li><li>Headphones recommended for acoustic precision</li><li>Seated, upright posture</li></ul><br><p>This is structural application — not passive listening.</p></div></div>
+          <div class="guide-card"><span class="guide-num">02</span><div class="guide-content"><h3>Timing &amp; Cadence</h3><p>Each day requires approximately 30 minutes of structured engagement. <br> Allow 24 to 48 hours between days to support cognitive integration.</p><ul class="guide-list"><li>Do not accelerate the sequence</li><li>Morning application recommended — before operational load begins</li><li>Avoid initiating sessions during active conflict or immediate crisis</li><li>Consistent timing enhances stability</li></ul><br><p>Precision precedes progression.</p></div></div>
+          <div class="guide-card"><span class="guide-num">03</span><div class="guide-content"><h3>Protocol Repetition</h3><p>The Foundation Protocol is preventive. <br> Recommended maintenance cycle:</p><ul class="guide-list"><li>Full three-day cycle every 30 days</li><li>Full cycle before sustained high-pressure periods</li><li>Individual sessions may be applied selectively under pressure</li></ul><br><p>Integration is cumulative. <br> Immediate transformation is not the objective.</p><br><p>Consistency preserves architecture.</p></div></div>
+          <div class="guide-card"><span class="guide-num">04</span><div class="guide-content"><h3>What to Observe</h3><p>During and after application, monitor:</p><ul class="guide-list"><li>Decision clarity</li><li>Reactivity thresholds</li><li>Cognitive load perception</li><li>Internal response calibration</li></ul><br><p>Record observations privately.</p><br><p>Patterns become visible through repetition.</p></div></div>
+          <div class="guide-card guide-card-note"><div class="guide-content"><h3>Confidentiality Reminder</h3><p>All materials are for private executive use only.<br> Access is personal and non-transferable.<br> NERVO™ is an educational executive protocol and does not constitute medical or psychological treatment.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+  </main><!-- end main -->
+
+  <!-- ── AIS SEQUENCE MODAL ── -->
+  <div id="ais-seqModal">
+    <div class="ais-modal-inner">
+      <button class="ais-mclose" onclick="aisCloseSeq()">×</button>
+      <div class="ais-mprog" id="ais-seqProg">
+        <div class="ais-mdot active"></div><div class="ais-mdot"></div><div class="ais-mdot"></div><div class="ais-mdot"></div>
+      </div>
+      <div class="ais-mlabel" id="ais-seqLabel"></div>
+      <div class="ais-mname" id="ais-seqName"></div>
+      <div class="ais-minstr" id="ais-seqInstr"></div>
+      <div class="ais-mtimer" id="ais-seqTimer">3</div>
+      <div class="ais-mlbank" id="ais-seqLbank">
+        <div class="ais-chip" onclick="aisSelModalLabel(this)">Rehearsal Loop</div>
+        <div class="ais-chip" onclick="aisSelModalLabel(this)">Control Spike</div>
+        <div class="ais-chip" onclick="aisSelModalLabel(this)">Noise Escalation</div>
+        <div class="ais-chip" onclick="aisSelModalLabel(this)">Patience Drop</div>
+        <div class="ais-chip" onclick="aisSelModalLabel(this)">Drift Detected</div>
+        <div class="ais-chip" onclick="aisSelModalLabel(this)">Signal Lost</div>
+      </div>
+      <div class="ais-mquestion" id="ais-seqQuestion">"What preserves precision right now?"</div>
+      <div class="ais-mnav">
+        <button class="ais-mbtn" onclick="aisCloseSeq()">Exit</button>
+        <button class="ais-mbtn primary" id="ais-seqNext">Continue →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── AIS EXERCISE MODAL ── -->
+  <div id="ais-exModal">
+    <div class="ais-emin">
+      <button class="ais-emclose" onclick="aisCloseEx()">×</button>
+      <div class="ais-emhead">
+        <div id="ais-emType"></div>
+        <div class="ais-emtitle" id="ais-emTitle"></div>
+        <div class="ais-emmeta" id="ais-emMeta"></div>
+      </div>
+      <div class="ais-embody" id="ais-emBody"></div>
+      <div class="ais-emfooter">
+        <button class="ais-cancel-btn" onclick="aisCloseEx()">Cancel</button>
+        <button class="ais-finish-btn" id="ais-emFinish" onclick="aisCompleteEx()">Mark as Complete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="audio1.js"></script>
+
+  <!-- ══ AIS JAVASCRIPT ══ -->
+  <script>
+  // ── EXERCISE DATA ──
+  const AIS_EX = [
+    {id:0,type:'diag',title:'Mapping Your Drift Patterns',dur:'10 min',steps:['r','l'],desc:'Identify which of the three AIS signals appears most frequently in your daily operation. Build a personal pattern baseline.',body:`<div class="ex-intro">Before you can interrupt a pattern, you need to know which patterns own you. This diagnostic maps your three most common drift triggers so you can detect them earlier and with greater precision.</div><div class="ex-block"><span class="ex-blabel">Part 1 — Frequency Mapping</span><p style="font-size:12px;color:#6b6960;margin-bottom:18px;line-height:1.7;">Rate how often each signal appears in your week.</p><div class="scale-group-label">Micro-Reactivity</div><div class="scale-row"><span class="scale-lbl">Rarely</span><div class="scale-dots" id="asc-react"><div class="scale-dot" onclick="aisSS('asc-react',this)">1</div><div class="scale-dot" onclick="aisSS('asc-react',this)">2</div><div class="scale-dot" onclick="aisSS('asc-react',this)">3</div><div class="scale-dot" onclick="aisSS('asc-react',this)">4</div><div class="scale-dot" onclick="aisSS('asc-react',this)">5</div></div><span class="scale-lbl">Daily</span></div><div class="scale-group-label">Mental Noise Escalation</div><div class="scale-row"><span class="scale-lbl">Rarely</span><div class="scale-dots" id="asc-noise"><div class="scale-dot" onclick="aisSS('asc-noise',this)">1</div><div class="scale-dot" onclick="aisSS('asc-noise',this)">2</div><div class="scale-dot" onclick="aisSS('asc-noise',this)">3</div><div class="scale-dot" onclick="aisSS('asc-noise',this)">4</div><div class="scale-dot" onclick="aisSS('asc-noise',this)">5</div></div><span class="scale-lbl">Daily</span></div><div class="scale-group-label">Automatic Rehearsal</div><div class="scale-row"><span class="scale-lbl">Rarely</span><div class="scale-dots" id="asc-reh"><div class="scale-dot" onclick="aisSS('asc-reh',this)">1</div><div class="scale-dot" onclick="aisSS('asc-reh',this)">2</div><div class="scale-dot" onclick="aisSS('asc-reh',this)">3</div><div class="scale-dot" onclick="aisSS('asc-reh',this)">4</div><div class="scale-dot" onclick="aisSS('asc-reh',this)">5</div></div><span class="scale-lbl">Daily</span></div></div><div class="ex-block"><span class="ex-blabel">Part 2 — Context Identification</span><div class="ex-q">In which context does drift most often begin for you?</div><div class="opt-grid"><button class="opt" onclick="aisSO(this,'actx')">Before high-stakes meetings or presentations</button><button class="opt" onclick="aisSO(this,'actx')">When a decision is ambiguous or delayed</button><button class="opt" onclick="aisSO(this,'actx')">After receiving criticism or pushback</button><button class="opt" onclick="aisSO(this,'actx')">During periods of sustained overload</button></div></div><div class="ex-block"><span class="ex-blabel">Part 3 — Physical Signature</span><div class="ex-q">What is your body's earliest physical signal that drift has begun?</div><textarea class="ex-textarea" placeholder="e.g. jaw tension, shallow breathing, eyes moving faster..." rows="3"></textarea></div><div class="highlight-box"><strong>KEY INSIGHT</strong>Your highest-rated signal is your primary entry point into drift. The AIS is most powerful when deployed the moment this specific signal appears.</div>`},
+    {id:1,type:'daily',title:'The Morning Calibration',dur:'5 min',steps:['r'],desc:'A structured morning routine to set your detection baseline before pressure arrives. Prevents drift by establishing a clear internal reference point.',body:`<div class="ex-intro">Drift is easier to detect when you have a clear baseline. This practice creates a daily internal reference point so when the pattern shifts, you notice it faster.</div><div class="ex-block"><span class="ex-blabel">Step 1 — State Scan (60 seconds)</span><p style="font-size:12px;color:#6b6960;margin-bottom:14px;line-height:1.7;">Before opening any device or conversation, sit still for 60 seconds.</p><div class="timer-widget"><div class="timer-display" id="at-morning">60</div><button class="ais-btn" id="ab-morning" onclick="aisStartTimer('at-morning','ab-morning',60,event)">Start Scan</button></div></div><div class="ex-block"><span class="ex-blabel">Step 2 — Baseline Check</span><div class="ex-q">Where are you before the day begins?</div><div class="checklist"><div class="check-item" onclick="aisTog(this)"><div class="check-box">✓</div><div class="check-txt">My thoughts are relatively contained — I'm not rehearsing anything yet</div></div><div class="check-item" onclick="aisTog(this)"><div class="check-box">✓</div><div class="check-txt">I can feel a mild anticipatory tension about something today</div></div><div class="check-item" onclick="aisTog(this)"><div class="check-box">✓</div><div class="check-txt">My patience level feels high — I'm not easily triggered right now</div></div><div class="check-item" onclick="aisTog(this)"><div class="check-box">✓</div><div class="check-txt">There's an unresolved loop from yesterday still running in the background</div></div></div></div><div class="ex-block"><span class="ex-blabel">Step 3 — Today's Primary Risk</span><div class="ex-q">What situation today is most likely to trigger your dominant drift signal?</div><textarea class="ex-textarea" placeholder="Describe the situation and the signal you expect..." rows="3"></textarea></div><div class="ex-block"><span class="ex-blabel">Step 4 — Pre-Commitment</span><div class="ex-q">"When I detect [signal], my first move will be..."</div><textarea class="ex-textarea" placeholder="Write your specific pre-commitment for today..." rows="3"></textarea></div><div class="highlight-box"><strong>PROTOCOL NOTE</strong>Run this practice for 7 consecutive mornings to build automatic early detection.</div>`},
+    {id:2,type:'journal',title:'Post-Drift Autopsy',dur:'15 min',steps:['r','l'],desc:'A structured debrief to conduct after any moment where you lost precision. Extracts usable data from each drift event.',body:`<div class="ex-intro">Every drift event contains information. This exercise converts a moment of cognitive loss into operational data — so the same pattern costs you less next time.</div><div class="ex-block"><span class="ex-blabel">Entry 1 — The Event</span><div class="ex-q">Describe the moment you lost precision. What was happening externally?</div><textarea class="ex-textarea" placeholder="Context, people present, what was said..." rows="4"></textarea></div><div class="ex-block"><span class="ex-blabel">Entry 2 — The First Signal</span><div class="ex-q">What was the very first internal shift you can now identify, looking back?</div><textarea class="ex-textarea" placeholder="The earliest detectable moment..." rows="3"></textarea></div><div class="ex-block"><span class="ex-blabel">Entry 3 — The Pattern Label</span><div class="ex-q">Which pattern was operating?</div><div class="opt-grid"><button class="opt" onclick="aisSO(this,'apttn')">Rehearsal Loop</button><button class="opt" onclick="aisSO(this,'apttn')">Control Spike</button><button class="opt" onclick="aisSO(this,'apttn')">Noise Escalation</button><button class="opt" onclick="aisSO(this,'apttn')">Patience Drop</button><button class="opt" onclick="aisSO(this,'apttn')">Signal Lost</button><button class="opt" onclick="aisSO(this,'apttn')">Other — describe below</button></div><textarea class="ex-textarea" style="margin-top:9px;" placeholder="Two-word label if 'Other'..." rows="2"></textarea></div><div class="ex-block"><span class="ex-blabel">Entry 4 — The Gap</span><div class="ex-q">At what point could the AIS have been applied?</div><textarea class="ex-textarea" placeholder="Earliest intervention window and its likely impact..." rows="3"></textarea></div><div class="ex-block"><span class="ex-blabel">Entry 5 — The Redirect</span><div class="ex-q">What would "What preserves precision right now?" have produced in that moment?</div><textarea class="ex-textarea" placeholder="Write the answer as if asked in real time..." rows="3"></textarea></div><div class="highlight-box"><strong>DEBRIEF RULE</strong>Complete within 2 hours of any drift event while the internal data is still accessible. Delay erodes specificity.</div>`},
+    {id:3,type:'sim',title:'The Pressure Meeting',dur:'12 min',steps:['r','l','i','re'],desc:'A high-stakes meeting simulation. Apply the full 4-step AIS sequence in real time as the scenario escalates.',body:`<div class="ex-intro">Read the scenario. At each step, apply the corresponding AIS action before continuing. Do not skip ahead.</div><div class="ex-block"><span class="ex-blabel">Scenario</span><div class="scenario-box">You are in a board review meeting. A key initiative you have led for four months is being questioned by a senior stakeholder who was not involved in its development. Their tone is dismissive. Two other members are silent but watching your reaction. The stakeholder asks a question that contains a factual error — but phrasing a correction risks being perceived as defensive.</div></div><div class="ex-block"><span class="ex-blabel">Step 01 — Recognize</span><div class="ex-q">What internal shift do you notice?</div><div class="opt-grid"><button class="opt" onclick="aisSO(this,'arec')">Immediate urge to defend the work verbally</button><button class="opt" onclick="aisSO(this,'arec')">Mental acceleration — building counterarguments rapidly</button><button class="opt" onclick="aisSO(this,'arec')">Rehearsing how you'd respond if challenged further</button><button class="opt" onclick="aisSO(this,'arec')">Patience narrowing — frustration with their framing</button></div></div><div class="ex-block"><span class="ex-blabel">Step 02 — Label</span><div class="ex-q">Name the pattern in exactly two words.</div><div class="opt-grid"><button class="opt" onclick="aisSO(this,'albl')">Rehearsal Loop</button><button class="opt" onclick="aisSO(this,'albl')">Control Spike</button><button class="opt" onclick="aisSO(this,'albl')">Noise Escalation</button><button class="opt" onclick="aisSO(this,'albl')">Patience Drop</button></div></div><div class="ex-block"><span class="ex-blabel">Step 03 — Interrupt</span><p style="font-size:12px;color:#6b6960;margin-bottom:14px;line-height:1.7;">Execute the pause before formulating your response.</p><div class="timer-widget"><div class="timer-display" id="at-sim">3</div><button class="ais-btn" id="ab-sim" onclick="aisStartTimer('at-sim','ab-sim',3,event)">Execute Pause</button></div></div><div class="ex-block"><span class="ex-blabel">Step 04 — Redirect</span><div class="ex-q">"What preserves precision right now?" — what is your next single deliberate action?</div><div class="opt-grid"><button class="opt" onclick="aisFB(this,'asim-r','pos','Correct. Asking a clarifying question signals composure, buys time for the room to recalibrate, and resets the frame without triggering a defensive reading.')">Ask a clarifying question — not defend the data</button><button class="opt" onclick="aisFB(this,'asim-r','neg','Reactive, not precise. Correcting publicly before the room is calibrated risks being perceived as defensive — even when you are factually right.')">Correct the factual error directly and immediately</button><button class="opt" onclick="aisFB(this,'asim-r','neg','Silence without acknowledgment reads as avoidance or contempt.')">Stay completely silent and wait</button><button class="opt" onclick="aisFB(this,'asim-r','neg','Deferring signals discomfort. It confirms the narrative that something is wrong.')">Defer to a follow-up conversation later</button></div><div class="feedback-box" id="afb-asim-r"></div></div><div class="highlight-box"><strong>SIMULATION DEBRIEF</strong>The AIS does not produce the right answer — it produces the right state from which to act. Train the sequence until it becomes reflexive.</div>`},
+    {id:4,type:'diag',title:'The Threshold Audit',dur:'12 min',steps:['r','l'],desc:'Map the specific conditions that lower your detection threshold. Identifies your personal vulnerability windows.',body:`<div class="ex-intro">Your ability to detect drift is not constant. This audit maps your personal vulnerability windows so you can apply higher vigilance when it matters most.</div><div class="ex-block"><span class="ex-blabel">Audit 1 — Degradation Triggers</span><div class="ex-q">Which conditions most reliably lower your detection threshold?</div><div class="checklist"><div class="check-item" onclick="aisTog(this)"><div class="check-box">✓</div><div class="check-txt">Sleep deficit (less than 6 hours)</div></div><div class="check-item" onclick="aisTog(this)"><div class="check-box">✓</div><div class="check-txt">Back-to-back meetings without recovery time</div></div><div class="check-item" onclick="aisTog(this)"><div class="check-box">✓</div><div class="check-txt">Unresolved interpersonal tension with someone in the room</div></div><div class="check-item" onclick="aisTog(this)"><div class="check-box">✓</div><div class="check-txt">High personal investment in the outcome being discussed</div></div><div class="check-item" onclick="aisTog(this)"><div class="check-box">✓</div><div class="check-txt">Authority gradient — someone more senior is observing</div></div><div class="check-item" onclick="aisTog(this)"><div class="check-box">✓</div><div class="check-txt">Deadline pressure creating artificial urgency</div></div><div class="check-item" onclick="aisTog(this)"><div class="check-box">✓</div><div class="check-txt">Public performance context — presentation, pitch, or evaluation</div></div></div></div><div class="ex-block"><span class="ex-blabel">Audit 2 — Maximum Vulnerability Window</span><div class="ex-q">Describe the scenario where all your checked conditions are simultaneously present.</div><textarea class="ex-textarea" placeholder="Your specific high-risk scenario..." rows="4"></textarea></div><div class="ex-block"><span class="ex-blabel">Audit 3 — Pre-Activation Protocol</span><div class="ex-q">In your maximum vulnerability window, what do you do BEFORE the situation begins?</div><textarea class="ex-textarea" placeholder="Pre-situation actions, environmental adjustments..." rows="4"></textarea></div><div class="highlight-box"><strong>AUDIT OUTPUT</strong>Your high-risk window is where the AIS must be pre-activated — not applied reactively.</div>`},
+    {id:5,type:'daily',title:'Real-Time Labeling Practice',dur:'7 min',steps:['l'],desc:'A daily micro-practice to build labeling speed. The faster you can name the pattern, the shorter the drift window.',body:`<div class="ex-intro">Labeling is the step most people skip. They detect drift but don't name it — and unnamed patterns run longer. This practice builds the reflexive naming speed the AIS requires.</div><div class="ex-block"><span class="ex-blabel">Round 1 — Speed Label</span><p style="font-size:12px;color:#6b6960;margin-bottom:14px;line-height:1.7;">Read each situation. Write a two-word label. First instinct only.</p>${['You are in a conversation and find yourself mentally composing your reply before the other person has finished speaking.','A decision that should have been made two days ago is still unresolved. You are now running multiple mental simulations.','Someone contradicts something you said. You feel an immediate urge to respond before you understand their actual point.','You are heading into a difficult conversation and have already rehearsed it four times mentally in the last hour.'].map((s,i)=>`<div class="scenario-box" style="margin-bottom:10px;border-color:#8aab28;"><div style="font-size:9px;letter-spacing:0.2em;color:#6b6960;margin-bottom:7px;">SITUATION ${i+1}</div>${s}<textarea class="ex-textarea" style="margin-top:10px;" placeholder="Two-word label..." rows="1"></textarea></div>`).join('')}</div><div class="ex-block"><span class="ex-blabel">Round 2 — Your Own Archive</span><div class="ex-q">Think of the last time you lost precision. Label it now.</div><textarea class="ex-textarea" placeholder="Two-word label + one sentence..." rows="3"></textarea></div><div class="ex-block"><span class="ex-blabel">Round 3 — Build Your Personal Label Bank</span><div class="ex-q">What two-word labels are most accurate for your specific patterns?</div><textarea class="ex-textarea" placeholder="List 3–5 personal labels..." rows="4"></textarea></div><div class="highlight-box"><strong>SPEED TARGET</strong>Move from detection to label in under 5 seconds. Run daily for one week to make labeling automatic.</div>`},
+    {id:6,type:'journal',title:'Precision Architecture',dur:'20 min',steps:['r','l','re'],desc:'A weekly strategic journal to map the structural conditions producing drift patterns — and redesign them.',body:`<div class="ex-intro">This weekly exercise operates above individual drift events — mapping the structural conditions that make drift predictable.</div><div class="ex-block"><span class="ex-blabel">Journal 1 — This Week's Drift Map</span><div class="ex-q">List the three moments this week where you detected drift or lost precision.</div><textarea class="ex-textarea" placeholder="Moment 1: context — signal — pattern..." rows="2"></textarea><textarea class="ex-textarea" style="margin-top:7px;" placeholder="Moment 2: context — signal — pattern..." rows="2"></textarea><textarea class="ex-textarea" style="margin-top:7px;" placeholder="Moment 3: context — signal — pattern..." rows="2"></textarea></div><div class="ex-block"><span class="ex-blabel">Journal 2 — Pattern Frequency</span><div class="ex-q">Which pattern appeared most frequently this week?</div><div class="opt-grid"><button class="opt" onclick="aisSO(this,'awkp')">Rehearsal Loop</button><button class="opt" onclick="aisSO(this,'awkp')">Control Spike</button><button class="opt" onclick="aisSO(this,'awkp')">Noise Escalation</button><button class="opt" onclick="aisSO(this,'awkp')">Patience Drop</button></div></div><div class="ex-block"><span class="ex-blabel">Journal 3 — Structural Root</span><div class="ex-q">What structural condition in your environment is producing this pattern?</div><textarea class="ex-textarea" placeholder="e.g. meeting cadence, decision ambiguity, role boundary..." rows="3"></textarea></div><div class="ex-block"><span class="ex-blabel">Journal 4 — Next Week's Precision Commitment</span><div class="ex-q">What is the one structural change you can make next week?</div><textarea class="ex-textarea" placeholder="One concrete, observable change..." rows="3"></textarea></div><div class="ex-block"><span class="ex-blabel">Journal 5 — The Redirect Question Applied</span><div class="ex-q">What would "What preserves precision right now?" have produced across this week's drift events?</div><textarea class="ex-textarea" placeholder="One answer per event listed above..." rows="4"></textarea></div><div class="highlight-box"><strong>STRATEGIC PRINCIPLE</strong>Precision has architecture. This journal reveals what that architecture looks like in your specific operating context.</div>`},
+    {id:7,type:'sim',title:'Cascade Under Load',dur:'15 min',steps:['r','l','i','re'],desc:'Advanced multi-trigger simulation. Three escalating drift triggers arrive in sequence. Apply the AIS at each stage.',body:`<div class="ex-intro">Three escalating drift triggers in sequence. Apply the AIS at each stage before reading the next. Do not skip ahead.</div><div class="ex-block"><span class="ex-blabel">Stage 1 — Initial Trigger</span><div class="scenario-box">It is 3pm on a Thursday. You receive a message from a peer saying the delivery timeline you agreed on publicly needs to shift — they have a conflict you weren't informed of. Your team is waiting on this to begin their work.</div><div class="ex-q">Recognize: What is the internal signal?</div><div class="opt-grid"><button class="opt" onclick="aisSO(this,'as1')">Micro-reactivity — frustration and impulse to respond immediately</button><button class="opt" onclick="aisSO(this,'as1')">Rehearsal loop — mentally drafting the response message</button><button class="opt" onclick="aisSO(this,'as1')">Noise escalation — multiple parallel concerns activating at once</button><button class="opt" onclick="aisSO(this,'as1')">Patience drop — irritation with their lack of communication</button></div><div class="ex-q" style="margin-top:14px;">Label it. Your two-word pattern:</div><textarea class="ex-textarea" placeholder="Two words..." rows="1"></textarea></div><div class="ex-block"><span class="ex-blabel">Stage 2 — Escalation</span><div class="scenario-box">While composing your response, your manager calls. They heard about the delay from someone else before you could communicate it. They expect a solution in 30 minutes.</div><div class="ex-q">Apply the Interrupt before responding to your manager.</div><div class="timer-widget"><div class="timer-display" id="at-cascade">3</div><button class="ais-btn" id="ab-cascade" onclick="aisStartTimer('at-cascade','ab-cascade',3,event)">Execute 3-Second Interrupt</button></div><div class="ex-q" style="margin-top:14px;">After the interrupt: what does "What preserves precision right now?" produce?</div><textarea class="ex-textarea" placeholder="Your single deliberate next action..." rows="2"></textarea></div><div class="ex-block"><span class="ex-blabel">Stage 3 — Maximum Load</span><div class="scenario-box">As you prepare the solution, you discover the delay was caused by a miscommunication originating in your own team. The narrative outside is already forming. You have 15 minutes before the next stakeholder meeting.</div><div class="ex-q">Final redirect — what single action preserves the most precision in the next 15 minutes?</div><div class="opt-grid"><button class="opt" onclick="aisFB(this,'acacc-r','pos','Correct. Factual clarity before the meeting removes uncontrolled narrative before it forms. You arrive with information, not damage control.')">Send a brief, factual update to all stakeholders — no justification, just data and next step</button><button class="opt" onclick="aisFB(this,'acacc-r','neg','This burns the 15 minutes on internal accountability rather than external clarity.')">Identify who caused the miscommunication before the meeting</button><button class="opt" onclick="aisFB(this,'acacc-r','neg','Waiting allows uncontrolled narrative to form. You arrive into a room that has already interpreted the silence.')">Address it only in the meeting — no pre-communication</button><button class="opt" onclick="aisFB(this,'acacc-r','neg','Postponing signals inability to operate under load.')">Postpone the meeting by 24 hours</button></div><div class="feedback-box" id="afb-acacc-r"></div></div><div class="ex-block"><span class="ex-blabel">Debrief</span><div class="ex-q">At which stage did the AIS feel hardest to apply, and why?</div><textarea class="ex-textarea" placeholder="Honest reflection on the most difficult intervention point..." rows="3"></textarea></div><div class="highlight-box"><strong>CASCADE PRINCIPLE</strong>The first interrupt in a cascade is worth ten times a late one. Apply it earlier to prevent compounding.</div>`}
+  ];
+
+  // ── AIS STATE ──
+  let aisCompleted = JSON.parse(localStorage.getItem('ais_done')||'[]');
+  let aisCurEx = null;
+  let aisSeqStep = 0;
+  let aisSeqTmr = null;
+  const aisTH = {};
+
+  const AIS_TM = {diag:{lbl:'Auto-Diagnóstico',cls:'diag'},daily:{lbl:'Prática Diária',cls:'daily'},journal:{lbl:'Journaling',cls:'journal'},sim:{lbl:'Simulação',cls:'sim'}};
+  const AIS_SM = {r:'Recognize',l:'Label',i:'Interrupt',re:'Redirect'};
+  const AIS_SC = {r:'r',l:'l',i:'i',re:'re'};
+
+  // ── TAB SWITCH ──
+  function aisSwitchTab(id, el) {
+    document.querySelectorAll('#section-ais .ais-panel').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('#section-ais .ais-tab').forEach(t=>t.classList.remove('active'));
+    document.getElementById('ais-tab-'+id).classList.add('active');
+    el.classList.add('active');
+    if(id==='exercises') aisRenderGrid();
+  }
+
+  // ── RENDER GRID ──
+  function aisRenderGrid() {
+    const g = document.getElementById('ais-exGrid');
+    if(!g) return;
+    g.innerHTML = AIS_EX.map((ex,i)=>{
+      const done = aisCompleted.includes(ex.id);
+      const locked = i>0 && !aisCompleted.includes(AIS_EX[i-1].id);
+      const tm = AIS_TM[ex.type];
+      const tags = ex.steps.map(s=>`<div class="ais-stag ${AIS_SC[s]}">${AIS_SM[s]}</div>`).join('');
+      return `<div class="ais-ecard ${locked?'locked':''} ${done?'completed':''}">
+        <div class="ais-enum">${String(i+1).padStart(2,'0')}</div>
+        <div class="ais-etype ${tm.cls}">${tm.lbl}</div>
+        <div class="ais-stags">${tags}</div>
+        <div class="ais-etitle">${ex.title}</div>
+        <div class="ais-edesc">${ex.desc}</div>
+        <div class="ais-emeta"><span>⏱ ${ex.dur}</span>${done?'<span style="color:#c8f53a">✓ Completed</span>':''}</div>
+        ${locked
+          ? `<button class="ais-ebtn locked" disabled>Complete previous to unlock</button>`
+          : done
+            ? `<button class="ais-ebtn done" onclick="aisOpenEx(${ex.id})">Review →</button>`
+            : `<button class="ais-ebtn" onclick="aisOpenEx(${ex.id})">Start Exercise →</button>`}
+      </div>`;
+    }).join('');
+    const c=aisCompleted.length, t=AIS_EX.length;
+    document.getElementById('ais-progFill').style.width=(c/t*100)+'%';
+    document.getElementById('ais-progCount').textContent=`${c} / ${t} completed`;
+  }
+
+  // ── EXERCISE MODAL ──
+  function aisOpenEx(id) {
+    const ex = AIS_EX.find(e=>e.id===id);
+    aisCurEx = id;
+    const tm = AIS_TM[ex.type];
+    document.getElementById('ais-emType').innerHTML=`<div class="ais-etype ${tm.cls}">${tm.lbl}</div>`;
+    document.getElementById('ais-emTitle').textContent=ex.title;
+    document.getElementById('ais-emMeta').textContent=`⏱ ${ex.dur}  ·  Steps: ${ex.steps.map(s=>AIS_SM[s]).join(' · ')}`;
+    document.getElementById('ais-emBody').innerHTML=ex.body;
+    document.getElementById('ais-exModal').classList.add('open');
+    document.getElementById('ais-exModal').scrollTop=0;
+    document.getElementById('ais-emFinish').textContent = aisCompleted.includes(id)?'Mark as Complete Again':'Mark as Complete';
+  }
+  function aisCloseEx() { document.getElementById('ais-exModal').classList.remove('open'); aisCurEx=null; }
+  function aisCompleteEx() {
+    if(aisCurEx===null) return;
+    if(!aisCompleted.includes(aisCurEx)){ aisCompleted.push(aisCurEx); localStorage.setItem('ais_done',JSON.stringify(aisCompleted)); }
+    aisCloseEx(); aisRenderGrid();
+  }
+
+  // ── INTERACTIONS ──
+  function aisSS(id,el){ document.querySelectorAll('#'+id+' .scale-dot').forEach(d=>d.classList.remove('selected')); el.classList.add('selected'); }
+  function aisSO(el,g){ document.querySelectorAll(`button.opt[onclick*="'${g}'"]`).forEach(e=>e.classList.remove('selected','correct','wrong')); el.classList.add('selected'); }
+  function aisTog(el){ el.classList.toggle('checked'); }
+  function aisFB(el,g,type,msg){
+    document.querySelectorAll(`button.opt[onclick*="'${g}'"]`).forEach(e=>e.classList.remove('selected','correct','wrong'));
+    el.classList.add(type==='pos'?'correct':'wrong');
+    const fb=document.getElementById('afb-'+g);
+    if(fb){fb.textContent=msg;fb.className='feedback-box '+(type==='pos'?'pos':'neg');fb.style.display='block';}
+  }
+  function aisStartTimer(dispId,btnId,secs,evt){
+    if(evt) evt.stopPropagation();
+    const disp=document.getElementById(dispId), btn=document.getElementById(btnId);
+    if(!disp||!btn) return;
+    btn.disabled=true; let c=secs;
+    disp.className='timer-display running';
+    if(aisTH[dispId]) clearInterval(aisTH[dispId]);
+    aisTH[dispId]=setInterval(()=>{
+      c--; disp.textContent=c;
+      if(c<=0){ clearInterval(aisTH[dispId]); disp.textContent='✓'; disp.className='timer-display done'; btn.disabled=false; btn.textContent='Repeat'; }
+    },1000);
+  }
+
+  // ── STEP ACCORDION ──
+  function aisToggleStep(el){
+    document.querySelectorAll('#section-ais .ais-step').forEach(s=>s.classList.remove('active'));
+    el.classList.add('active');
+  }
+  function aisSelLabel(el,e){
+    e.stopPropagation();
+    el.closest('.ais-step').querySelectorAll('.ais-chip').forEach(c=>c.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  // ── STEP TIMER ──
+  function aisStartTimer(dispId,btnId,secs,evt){
+    if(evt) evt.stopPropagation();
+    const disp=document.getElementById(dispId), btn=document.getElementById(btnId);
+    if(!disp||!btn) return;
+    btn.disabled=true; let c=secs;
+    disp.className='ais-timer-disp running';
+    if(aisTH[dispId]) clearInterval(aisTH[dispId]);
+    aisTH[dispId]=setInterval(()=>{
+      c--; disp.textContent=c;
+      if(c<=0){ clearInterval(aisTH[dispId]); disp.textContent='✓'; disp.className='ais-timer-disp done'; btn.disabled=false; btn.textContent='Repeat'; }
+    },1000);
+  }
+
+  // ── SEQUENCE MODAL ──
+  const AIS_SEQ=[
+    {lbl:'Step 01 of 04',name:'Recognize',txt:'Detect the internal shift. Shortened patience. Accelerated thought. Preemptive internal dialogue.<br><br>No judgment. Only detection.',type:'read'},
+    {lbl:'Step 02 of 04',name:'Label',txt:'Name the pattern in two words. Labeling reduces automatic fusion with the state.',type:'label'},
+    {lbl:'Step 03 of 04',name:'Interrupt',txt:'Pause internal processing for three seconds.<br>No commentary. No correction. No justification.',type:'timer'},
+    {lbl:'Step 04 of 04',name:'Redirect',txt:'Ask one controlled question. Not speed. Not dominance. Precision.<br><br>Then execute the next deliberate action.',type:'redirect'}
+  ];
+  function aisOpenSeq(){ aisSeqStep=0; aisRenderSeq(); document.getElementById('ais-seqModal').classList.add('open'); }
+  function aisCloseSeq(){ document.getElementById('ais-seqModal').classList.remove('open'); clearInterval(aisSeqTmr); }
+  function aisRenderSeq(){
+    const s=AIS_SEQ[aisSeqStep];
+    document.getElementById('ais-seqLabel').textContent=s.lbl;
+    document.getElementById('ais-seqName').textContent=s.name;
+    document.getElementById('ais-seqInstr').innerHTML=s.txt;
+    document.querySelectorAll('#ais-seqModal .ais-mdot').forEach((d,i)=>{
+      d.className='ais-mdot';
+      if(i<aisSeqStep) d.classList.add('done');
+      if(i===aisSeqStep) d.classList.add('active');
+    });
+    document.getElementById('ais-seqTimer').style.display='none';
+    document.getElementById('ais-seqLbank').style.display='none';
+    document.getElementById('ais-seqQuestion').style.display='none';
+    const nb=document.getElementById('ais-seqNext');
+    if(s.type==='timer'){
+      const t=document.getElementById('ais-seqTimer'); t.style.display='block'; t.textContent='3'; t.className='ais-mtimer';
+      nb.textContent='Start Pause →'; nb.onclick=()=>aisRunSeqTimer(nb);
+    } else if(s.type==='label'){
+      document.getElementById('ais-seqLbank').style.display='flex';
+      nb.textContent='Continue →'; nb.onclick=aisNextSeq;
+    } else if(s.type==='redirect'){
+      document.getElementById('ais-seqQuestion').style.display='block';
+      nb.textContent='Complete ✓'; nb.onclick=aisNextSeq;
+    } else { nb.textContent='Continue →'; nb.onclick=aisNextSeq; }
+  }
+  function aisRunSeqTimer(btn){
+    const t=document.getElementById('ais-seqTimer'); let c=3;
+    t.className='ais-mtimer countdown'; btn.disabled=true;
+    clearInterval(aisSeqTmr);
+    aisSeqTmr=setInterval(()=>{
+      c--; t.textContent=c;
+      if(c<=0){ clearInterval(aisSeqTmr); t.textContent='✓'; t.className='ais-mtimer'; btn.disabled=false; btn.textContent='Continue →'; btn.onclick=aisNextSeq; }
+    },1000);
+  }
+  function aisNextSeq(){
+    aisSeqStep++;
+    if(aisSeqStep>=AIS_SEQ.length){
+      document.getElementById('ais-seqName').textContent='Complete';
+      document.getElementById('ais-seqLabel').textContent='Sequence Finished';
+      document.getElementById('ais-seqInstr').innerHTML='You have completed the Autopilot Interruption Sequence.<br><br>Execute the next deliberate action.';
+      ['ais-seqTimer','ais-seqLbank','ais-seqQuestion'].forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display='none'; });
+      const nb=document.getElementById('ais-seqNext'); nb.textContent='Close'; nb.onclick=aisCloseSeq;
+      document.querySelectorAll('#ais-seqModal .ais-mdot').forEach(d=>d.className='ais-mdot done');
+      return;
+    }
+    aisRenderSeq();
+  }
+  function aisSelModalLabel(el){
+    document.querySelectorAll('#ais-seqLbank .ais-chip').forEach(c=>c.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  // Init grid when exercises tab is first opened
+  aisRenderGrid();
+  </script>
+
+</body>
+</html>
